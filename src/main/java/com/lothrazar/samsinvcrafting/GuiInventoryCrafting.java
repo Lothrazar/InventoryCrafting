@@ -1,6 +1,8 @@
 package com.lothrazar.samsinvcrafting;
 
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class GuiInventoryCrafting extends GuiInventory 
@@ -44,7 +46,7 @@ public class GuiInventoryCrafting extends GuiInventory
 		*/
 	}
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
 		//this should load texture, but fails and gives transparent
 		//was 
@@ -54,7 +56,29 @@ java.io.FileNotFoundException: samsinvcrafting:assets/gui/inventory33.png*/
 		
 		/*[23:11:01] [Client thread/WARN]: Failed to load texture: samsinvcrafting:textures/gui/inventory33.png
 java.io.FileNotFoundException: samsinvcrafting:textures/gui/inventory33.png*/
+	//	this.mc.getTextureManager().bindTexture(new net.minecraft.util.ResourceLocation(ModInvCrafting.MODID, "textures/gui/inventorycraft.png"));
 		
-		this.mc.getTextureManager().bindTexture(new net.minecraft.util.ResourceLocation(ModInvCrafting.MODID, "textures/gui/inventory33.png"));
+		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		this.mc.getTextureManager().bindTexture(new net.minecraft.util.ResourceLocation(ModInvCrafting.MODID, "textures/gui/inventorycraft.png"));
+
+        int k = this.guiLeft;
+        int l = this.guiTop;
+        this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+		
+	
+	
+	}
+	
+	@Override
+	public void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+	{
+// this.fontRendererObj.drawString(I18n.format("container.crafting", new Object[0]), 86, 16, 4210752);
+		//if (this.container != null)
+		//{
+		//	this.mc.getTextureManager().bindTexture(new net.minecraft.util.ResourceLocation(ModInvCrafting.MODID, "textures/gui/inventorycraft.png"));
+		//}
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+		
 	}
 }
