@@ -10,20 +10,21 @@ public class GuiInventoryCrafting extends GuiInventory
 	{
 		super(p);
 		System.out.println("GuiInventoryCrafting constructor");
-		
+		this.container = ((p.inventoryContainer instanceof ContainerPlayerCrafting) ? (ContainerPlayerCrafting)p.inventoryContainer : null);
 		//InventoryContainer ic = p_i1094_1_.inventoryContainer;
 		
 		//java.lang.ClassCastException: net.minecraft.entity.player.InventoryPlayer cannot be cast to com.lothrazar.samsinvcrafting.InventoryPlayerCrafting
 		
 		//InventoryPlayerCrafting ipc = new InventoryPlayerCrafting(p);
 		// this.container = ((p_i1094_1_.inventoryContainer instanceof ContainerPlayerCrafting) ? (ContainerPlayerCrafting)p_i1094_1_.inventoryContainer : null);
-		try
+		/*try
 		{
 			 if(this.container == null)// || ic instanceof ContainerPlayerCrafting)
 			 {
 				 System.out.println("container null, remaking");
-					//this.container = new ContainerPlayerCrafting((InventoryPlayerCrafting)p.inventory, p.worldObj.isRemote, p);
-				 this.container = new ContainerPlayerCrafting(new InventoryPlayerCrafting(p), p.worldObj.isRemote, p);
+			
+
+	this.container = new ContainerPlayerCrafting(new InventoryPlayerCrafting(p), p.worldObj.isRemote, p);
 	
 			 }
 		}
@@ -40,8 +41,9 @@ public class GuiInventoryCrafting extends GuiInventory
 			 }
 		 }
 		
-		
+		*/
 	}
+	@Override
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
 	{
 		//this should load texture, but fails and gives transparent

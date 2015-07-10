@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -86,7 +87,17 @@ public class ModInvCrafting
     @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinWorldEvent event)
     {
-    	
+    	if (event.entity instanceof EntityPlayer)
+    	{
+    		EntityPlayer player = (EntityPlayer)event.entity;
+    		
+    		 if (!(player.inventory instanceof InventoryPlayerCrafting))
+    		 {
+	    		 player.inventory = new InventoryPlayerCrafting(player);
+	    		 player.inventoryContainer = new ContainerPlayerCrafting((InventoryPlayerCrafting)player.inventory, !player.worldObj.isRemote, player);
+	    		 player.openContainer = player.inventoryContainer;
+    		 }
+    	}
     }
     @SubscribeEvent
     public void onEntityConstruct(EntityConstructing event)

@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerPlayerCrafting extends ContainerPlayer 
 {
-	private int craftingSize = 3;//2 in vanilla
+	private int craftingSize = 3;//did not exist before, was magic'd as 2 everywhere
 	public InventoryPlayerCrafting invo;
 	private final EntityPlayer thePlayer;
 
@@ -23,15 +23,36 @@ public class ContainerPlayerCrafting extends ContainerPlayer
 	{
 		super(playerInventory, localWorld, player);
 		System.out.println("ContainerPlayerCrafting constructor");
-		inventorySlots = Lists.newArrayList();
-		//this.isLocalWorld = localWorld;
         this.thePlayer = player;
-		
+		inventorySlots = Lists.newArrayList();//undo everything done by super()
 		craftMatrix = new InventoryCrafting(this, craftingSize, craftingSize);
-        this.addSlotToContainer(new SlotCrafting(playerInventory.player, this.craftMatrix, this.craftResult, 0, 144, 36));
-        int i;
-        int j;
-
+		
+        int slotNumber = 0;//the ID for the inventory slot
+		
+		int shiftxOut = 9;//9 and 6 are perfect; just location numbers of how i shift vanilla numbers
+        int shiftyOut = 6;
+        int shiftx = -7;//-7 perfect
+        int shifty = 0;//0 perfect
+        int cx;
+        int cy;
+        
+        //the following code 	
+        //the 144 and 36 are the magic numbers picked from vanilla code
+        this.addSlotToContainer(new SlotCrafting(playerInventory.player, this.craftMatrix, this.craftResult,  slotNumber, 144+shiftxOut, 36+shiftyOut));
+        int i,j;
+        
+        //the following code is from my Minecraft 1.4.5 mod (also ported to 1.5.x) called InventoryCrafting
+        //I had uploaded it here in Nov 13, 2012 : http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286787-1-5-2-ssp-inventorycrafting-3x3-crafting-grid-in
+        
+        /* boolean onHold = false;
+        int[] holdSlot = new int[5];
+        int[] holdX = new int[5];
+        int[] holdY = new int[5];
+        int h = 0;
+       // slotNumber = 0;
+        // NEW on hold method : add the new five slots at the very end here, so the armor numbers and other numbers dont get messed up
+        */
+ 
         for (i = 0; i < craftingSize; ++i)
         {
             for (j = 0; j < craftingSize; ++j)
