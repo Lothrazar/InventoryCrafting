@@ -2,6 +2,8 @@ package com.lothrazar.samsinvcrafting;
 
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -57,10 +59,24 @@ public class ModInvCrafting
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event)
     {
-      if ((event.gui != null) && (event.gui.getClass() == net.minecraft.client.gui.inventory.GuiInventory.class)   )
-      {
-    	  System.out.println("player opening inventory");
-      }
+    	if ((event.gui != null) && (event.gui.getClass() == net.minecraft.client.gui.inventory.GuiInventory.class) && event.gui instanceof GuiInventoryCrafting == false  )
+    	{
+    		System.out.println("player opening GuiInventory");
+
+    		 event.gui = new GuiInventoryCrafting(Minecraft.getMinecraft().thePlayer);
+    	  //yep this fires
+    	  //GuiInventory gui = (GuiInventory)event.gui;
+    	  
+    	  
+    	  
+    	}  
+    	else if (event.gui == null && Minecraft.getMinecraft().thePlayer.inventoryContainer instanceof ContainerPlayerCrafting )
+    	{		
+
+    		System.out.println("ContainerPlayerCrafting");
+    		ContainerPlayerCrafting cr = (ContainerPlayerCrafting)Minecraft.getMinecraft().thePlayer.inventoryContainer;
+
+    	}
     }
     @EventHandler
 	public void postInit(FMLPostInitializationEvent event) 
