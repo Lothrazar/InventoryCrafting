@@ -25,5 +25,13 @@ public class InventoryPlayerCrafting extends InventoryPlayer
 		  this.armorInventory = oldArmor;
 		}*/
 	}
+	
+	@Override
+	public void setInventorySlotContents(int index, ItemStack stack)
+    {
+		System.out.println("super setslot "+index );
+		super.setInventorySlotContents(index, stack);
+		
+    }
 
 }

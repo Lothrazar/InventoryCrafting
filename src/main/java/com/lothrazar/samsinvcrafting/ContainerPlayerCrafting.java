@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerPlayerCrafting extends ContainerPlayer 
 {
-	private int craftingSize = 3;//did not exist before, was magic'd as 2 everywhere
+	private int craftSize = 3;//did not exist before, was magic'd as 2 everywhere
 	public InventoryPlayerCrafting invo;
 	private final EntityPlayer thePlayer;
 
@@ -25,47 +25,85 @@ public class ContainerPlayerCrafting extends ContainerPlayer
 		System.out.println("ContainerPlayerCrafting constructor");
         this.thePlayer = player;
 		inventorySlots = Lists.newArrayList();//undo everything done by super()
-		craftMatrix = new InventoryCrafting(this, craftingSize, craftingSize);
+		craftMatrix = new InventoryCrafting(this, craftSize, craftSize);
 		
-        int slotNumber = 0;//the ID for the inventory slot
 		
-		int shiftxOut = 9;//9 and 6 are perfect; just location numbers of how i shift vanilla numbers
-        int shiftyOut = 6;
-        int shiftx = -7;//-7 perfect
-        int shifty = 0;//0 perfect
-        int cx;
-        int cy;
+		int shiftxOut = 9;//was 9 
+        int shiftyOut = 6;//was 6
+        int shiftx = -7;//was -7 
+        int shifty = 0;//was 0 
         
+      //turn off all the shifts, if we are staying wtih a 2x2 version
+        if(this.craftSize == 2)
+        {
+        	shiftxOut=0;
+        	shiftyOut=0;
+        	shiftx=0;
+        	shifty=0;
+        }
+        
+
+        int slotNumber = 0;//the ID for the inventory slot
         //the following code 	
         //the 144 and 36 are the magic numbers picked from vanilla code
+        //slot zero is the craft result slot in far right
         this.addSlotToContainer(new SlotCrafting(playerInventory.player, this.craftMatrix, this.craftResult,  slotNumber, 144+shiftxOut, 36+shiftyOut));
-        int i,j;
-        
-        //the following code is from my Minecraft 1.4.5 mod (also ported to 1.5.x) called InventoryCrafting
+        //int i,j;
+
+      //the following code is from my Minecraft 1.4.x mod (also ported to 1.5.x) called InventoryCrafting
         //I had uploaded it here in Nov 13, 2012 : http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286787-1-5-2-ssp-inventorycrafting-3x3-crafting-grid-in
         
-        /* boolean onHold = false;
+        int cx;
+        int cy;
+        int var4,var5;
+        boolean onHold = false;
         int[] holdSlot = new int[5];
         int[] holdX = new int[5];
         int[] holdY = new int[5];
         int h = 0;
-       // slotNumber = 0;
-        // NEW on hold method : add the new five slots at the very end here, so the armor numbers and other numbers dont get messed up
-        */
- 
-        for (i = 0; i < craftingSize; ++i)
+        for (var4 = 0; var4 < this.craftSize; ++var4) //-1 here kills the bottom row
         {
-            for (j = 0; j < craftingSize; ++j)
-            {
-            	System.out.println("craftslot at "+i+" "+j);
-                this.addSlotToContainer(new Slot(this.craftMatrix, j + i * 2, 88 + j * 18, 26 + i * 18));
+        	onHold = false;
+        	if( var4 == this.craftSize-1) onHold = true; //hold right and bottom column
+   
+            for (var5 = 0; var5 < this.craftSize; ++var5)  
+            {  
+            	if(var5 == this.craftSize-1)onHold = true; //hold right and bottom column
+          
+            	slotNumber = var5 + var4 * this.craftSize;
+            	cx = 88 + var5 * 18+shiftx;
+            	cy = 26 + var4 * 18+shifty;
+            	
+            	//if craftsize is not 3, then dont put anything on hold
+            	if(this.craftSize == 3 && onHold)
+            	{
+            		//save these to add at the end
+            		System.out.println("on hold "+slotNumber);
+            		holdSlot[h] = slotNumber;
+            		holdX[h] = cx;
+            		holdY[h] = cy;
+            		h++;
+            	}
+            	else
+            	{
+            		//add only the initial 2x2 grid now (numbers 1-4 inclusive, 0 is the output slot id)
+	            	//System.out.println("("+slotNumber+","+cx+","+cy+");");
+	                this.addSlotToContainer(new Slot(this.craftMatrix, slotNumber, cx , cy ));
+	              	System.out.println("("+slotNumber+", 2x2);"+cx+","+cy);
+            	}   
             }
         }
 
-        for (i = 0; i < 4; ++i)//the four armor slots
+        for (var4 = 0; var4 < 4; ++var4)
         {
-            final int k = i;
-            this.addSlotToContainer(new Slot(playerInventory, playerInventory.getSizeInventory() - 1 - i, 8, 8 + i * 18)
+        	slotNumber =  playerInventory.getSizeInventory() - 1 - var4;
+        	//it was slotarmor
+          //  this.addSlotToContainer(new SlotArmor(this, par1InventoryPlayer,slotNumber, 8, 8 + var4 * 18, var4)); 
+
+        	cx = 8;
+        	cy = 8 + var4 * 18;
+            final int k = var4;
+            this.addSlotToContainer(new Slot(player.inventory,slotNumber, cx, cy)
             {
                 private static final String __OBFID = "CL_00001755";
                 /**
@@ -89,35 +127,45 @@ public class ContainerPlayerCrafting extends ContainerPlayer
                 {
                     return ItemArmor.EMPTY_SLOT_NAMES[k];
                 }
-            });
+            }); 
+          	System.out.println("("+slotNumber+", armor);"+cx+","+cy);
         }
-
-        for (i = 0; i < 3; ++i)
+        //inventory is 3 rows by 9 columns
+        for (var4 = 0; var4 < 3; ++var4)
         {
-            for (j = 0; j < 9; ++j)
+            for (var5 = 0; var5 < 9; ++var5)
             {
-                this.addSlotToContainer(new Slot(playerInventory, j + (i + 1) * 9, 8 + j * 18, 84 + i * 18));
+            	slotNumber = var5 + (var4 + 1) * 9;
+            	cx = 8 + var5 * 18;
+            	cy = 84 + var4 * 18;
+                this.addSlotToContainer(new Slot(player.inventory,slotNumber , cx, cy)); 
+              	System.out.println("("+slotNumber+", reg inventory);");
             }
         }
 
-        for (i = 0; i < 9; ++i)
+        for (var4 = 0; var4 < 9; ++var4)
         {
-            this.addSlotToContainer(new Slot(playerInventory, i, 8 + i * 18, 142));
+        	slotNumber = var4;
+        	cx = 8 + var4 * 18;
+        	cy = 142;
+            this.addSlotToContainer(new Slot(player.inventory, var4, cx, cy)); 
+            System.out.println("("+slotNumber+", hotbar);");
+        }
+        
+        if(craftSize == 3)// Finally, add the five new slots to the 3x3 crafting grid (they end up being 45-49 inclusive)
+        {
+        	int maxUsed = 39;//sum of previously used, for now coded ins tead of calculated
+	        for(h = 0; h < 5; ++h)
+	        {
+	        	slotNumber = holdSlot[h] + maxUsed;
+	    		cx = holdX[h];
+	    		cy = holdY[h];
+	        	this.addSlotToContainer(new Slot(this.craftMatrix, slotNumber, cx , cy ));
+	          	System.out.println("("+slotNumber+","+cx+","+cy+" -from hold);");
+	        }
         }
 
-		this.invo = playerInventory;
         this.onCraftMatrixChanged(this.craftMatrix);
-	
-		//TODO: stuff like crafting = new Slot[9];
-		/*	int i,j;
-		
-	    for (i = 0; i < craftingSize; ++i)
-        {
-            for (j = 0; j < craftingSize; ++j)
-            {
-                this.addSlotToContainer(new Slot(this.craftMatrix, j + i * 2, 88 + j * 18, 26 + i * 18));
-            }
-        }*/
         
 	}
 	@Override
@@ -126,7 +174,7 @@ public class ContainerPlayerCrafting extends ContainerPlayer
 		System.out.println("ContainerPlayerCrafting onContainerClosed");
         super.onContainerClosed(playerIn);
 
-        for (int i = 0; i < craftingSize*craftingSize; ++i)
+        for (int i = 0; i < craftSize*craftSize; ++i)
         {
             ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
 
