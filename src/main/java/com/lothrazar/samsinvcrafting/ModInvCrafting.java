@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
@@ -62,7 +63,7 @@ public class ModInvCrafting
     {
     	if ((event.gui != null) && (event.gui.getClass() == net.minecraft.client.gui.inventory.GuiInventory.class) && event.gui instanceof GuiInventoryCrafting == false  )
     	{
-    		System.out.println("player opening GuiInventory");
+    		System.out.println("player opening & ccreate new GuiInventory");
 
     		 event.gui = new GuiInventoryCrafting(Minecraft.getMinecraft().thePlayer);
     	  //yep this fires
@@ -74,8 +75,8 @@ public class ModInvCrafting
     	else if (event.gui == null && Minecraft.getMinecraft().thePlayer.inventoryContainer instanceof ContainerPlayerCrafting )
     	{		
 
-    		System.out.println("ContainerPlayerCrafting");
-    		ContainerPlayerCrafting cr = (ContainerPlayerCrafting)Minecraft.getMinecraft().thePlayer.inventoryContainer;
+    		System.out.println("already exists ContainerPlayerCrafting");
+    		//ContainerPlayerCrafting cr = (ContainerPlayerCrafting)Minecraft.getMinecraft().thePlayer.inventoryContainer;
 
     	}
     }
@@ -91,19 +92,26 @@ public class ModInvCrafting
     	{
     		EntityPlayer player = (EntityPlayer)event.entity;
     		
-    		 if (!(player.inventory instanceof InventoryPlayerCrafting))
-    		 {
-	    		 player.inventory = new InventoryPlayerCrafting(player);
-	    		 player.inventoryContainer = new ContainerPlayerCrafting((InventoryPlayerCrafting)player.inventory, !player.worldObj.isRemote, player);
-	    		 player.openContainer = player.inventoryContainer;
-    		 }
+    		PlayerPowerups power = PlayerPowerups.get(player);
+    		if(power != null)
+    		{
+    			power.onJoinWorld();
+    		}
+    		
+    	 
     	}
     }
     @SubscribeEvent
     public void onEntityConstruct(EntityConstructing event)
     {
-    
+    	if ((event.entity instanceof EntityPlayer))
+    	{
+    		EntityPlayer player = (EntityPlayer)event.entity;
+  
+    		if (PlayerPowerups.get(player) == null)
+    		{
+    			PlayerPowerups.register(player);
+    		}
+    	}
     }
-    
-    
 }
