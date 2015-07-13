@@ -3,10 +3,7 @@ package com.lothrazar.samsinvcrafting;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
@@ -45,11 +42,8 @@ public class ModInvCrafting
 		
 		MinecraftForge.EVENT_BUS.register(instance);
 		FMLCommonHandler.instance().bus().register(instance);
-		
-		//network.registerMessage(MessageKeyPressed.class, MessageKeyPressed.class, MessageKeyPressed.ID, Side.SERVER);
-    	//network.registerMessage(MessagePotion.class, MessagePotion.class, MessagePotion.ID, Side.CLIENT);
- 	
     }
+    
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
@@ -57,34 +51,23 @@ public class ModInvCrafting
     	//try to remake this being forge-friendly.
     	//use what similar ideas to modInvPages, if i get that kinda working
     }
+    
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event)
     {
-    	if ((event.gui != null) && (event.gui.getClass() == net.minecraft.client.gui.inventory.GuiInventory.class) && event.gui instanceof GuiInventoryCrafting == false  )
+    	if (event.gui != null && event.gui.getClass() == net.minecraft.client.gui.inventory.GuiInventory.class && event.gui instanceof GuiInventoryCrafting == false  )
     	{
-    		System.out.println("player opening & ccreate new GuiInventory");
-
     		 event.gui = new GuiInventoryCrafting(Minecraft.getMinecraft().thePlayer);
-    	  //yep this fires
-    	  //GuiInventory gui = (GuiInventory)event.gui;
-    	  
-    	  
-    	  
     	}  
-    	else if (event.gui == null && Minecraft.getMinecraft().thePlayer.inventoryContainer instanceof ContainerPlayerCrafting )
-    	{		
-
-    		System.out.println("already exists ContainerPlayerCrafting");
-    		//ContainerPlayerCrafting cr = (ContainerPlayerCrafting)Minecraft.getMinecraft().thePlayer.inventoryContainer;
-
-    	}
     }
+    
     @EventHandler
 	public void postInit(FMLPostInitializationEvent event) 
     {
     	
     }
+    
     @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinWorldEvent event)
     {
@@ -97,10 +80,9 @@ public class ModInvCrafting
     		{
     			power.onJoinWorld();
     		}
-    		
-    	 
     	}
     }
+    
     @SubscribeEvent
     public void onEntityConstruct(EntityConstructing event)
     {

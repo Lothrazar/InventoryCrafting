@@ -3,7 +3,6 @@ package com.lothrazar.samsinvcrafting;
 import com.google.common.collect.Lists;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
@@ -22,16 +21,16 @@ public class ContainerPlayerCrafting extends ContainerPlayer
 	public ContainerPlayerCrafting(InventoryPlayerCrafting playerInventory,	boolean localWorld, EntityPlayer player) 
 	{
 		super(playerInventory, localWorld, player);
-		//System.out.println("ContainerPlayerCrafting constructor");
-        this.thePlayer = player;
+
 		inventorySlots = Lists.newArrayList();//undo everything done by super()
+        this.thePlayer = player;
 		craftMatrix = new InventoryCrafting(this, craftSize, craftSize);
 		
 		
-		int shiftxOut = 9;//was 9 
-        int shiftyOut = 6;//was 6
-        int shiftx = -7;//was -7 
-        int shifty = 0;//was 0 
+		int shiftxOut = 9;
+        int shiftyOut = 6;
+        int shiftx = -7;
+        int shifty = 0;
         
       //turn off all the shifts, if we are staying wtih a 2x2 version
         if(this.craftSize == 2)
@@ -42,13 +41,11 @@ public class ContainerPlayerCrafting extends ContainerPlayer
         	shifty=0;
         }
         
-
         int slotNumber = 0;//the ID for the inventory slot
         //the following code 	
         //the 144 and 36 are the magic numbers picked from vanilla code
         //slot zero is the craft result slot in far right
         this.addSlotToContainer(new SlotCrafting(playerInventory.player, this.craftMatrix, this.craftResult,  slotNumber, 144+shiftxOut, 36+shiftyOut));
-        //int i,j;
 
       //the following code is from my Minecraft 1.4.x mod (also ported to 1.5.x) called InventoryCrafting
         //I had uploaded it here in Nov 13, 2012 : http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286787-1-5-2-ssp-inventorycrafting-3x3-crafting-grid-in
@@ -89,7 +86,6 @@ public class ContainerPlayerCrafting extends ContainerPlayer
             		//add only the initial 2x2 grid now (numbers 1-4 inclusive, 0 is the output slot id)
 	            	//System.out.println("("+slotNumber+","+cx+","+cy+");");
 	                this.addSlotToContainer(new Slot(this.craftMatrix, slotNumber, cx , cy ));
-	              //	System.out.println("("+slotNumber+", 2x2);"+cx+","+cy);
             	}   
             }
         }
@@ -165,15 +161,14 @@ public class ContainerPlayerCrafting extends ContainerPlayer
         }
 
         this.onCraftMatrixChanged(this.craftMatrix);
-        
 	}
+	
 	@Override
     public void onContainerClosed(EntityPlayer playerIn)
     {
-		//System.out.println("ContainerPlayerCrafting onContainerClosed");
         super.onContainerClosed(playerIn);
 
-        for (int i = 0; i < craftSize*craftSize; ++i)
+        for (int i = 0; i < craftSize*craftSize; ++i) // was 4
         {
             ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
 
@@ -185,5 +180,4 @@ public class ContainerPlayerCrafting extends ContainerPlayer
 
         this.craftResult.setInventorySlotContents(0, (ItemStack)null);
     }
-
 }
