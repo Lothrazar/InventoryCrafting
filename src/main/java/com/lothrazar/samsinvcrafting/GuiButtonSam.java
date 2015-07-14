@@ -34,7 +34,7 @@ public class GuiButtonSam extends GuiButton
     	if(flag)
     	{
     		//do what the button is meant to do
-    		System.out.println("client side btn pressed");
+    	//	System.out.println("client side btn pressed");
     		//send packet to server from client (this) makes sense
     		
     	}
