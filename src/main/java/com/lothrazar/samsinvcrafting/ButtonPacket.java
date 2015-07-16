@@ -9,7 +9,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class ButtonPacket implements IMessage 
 {
+	public ButtonPacket() {}
 	NBTTagCompound tags = new NBTTagCompound();
+	public static final int ID = 0;
 	
 	public ButtonPacket(NBTTagCompound ptags)
 	{
@@ -29,8 +31,9 @@ public class ButtonPacket implements IMessage
 		ByteBufUtils.writeTag(buf, this.tags);
 	}
 
-	public class Handler implements IMessageHandler<ButtonPacket, IMessage>
+	public class HandleButtonPacket implements IMessageHandler<ButtonPacket, IMessage>
 	{
+		@Override
 		public IMessage onMessage(ButtonPacket message, MessageContext ctx)
 		{
 			System.out.println("packet handler got it");

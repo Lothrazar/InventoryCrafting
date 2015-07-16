@@ -2,6 +2,8 @@ package com.lothrazar.samsinvcrafting;
 
 import org.apache.logging.log4j.Logger;
 
+import com.lothrazar.samsinvcrafting.ButtonPacket.HandleButtonPacket;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -37,6 +39,7 @@ public class ModInvCrafting
     {
     	logger = event.getModLog();
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+    	network.registerMessage(HandleButtonPacket.class, ButtonPacket.class, ButtonPacket.ID, Side.SERVER);
 		
 		proxy.registerRenderers();
 		
