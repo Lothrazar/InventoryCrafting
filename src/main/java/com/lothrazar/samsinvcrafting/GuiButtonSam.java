@@ -2,17 +2,16 @@ package com.lothrazar.samsinvcrafting;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class GuiButtonSam extends GuiButton 
 {
-	//could take Entityplayer here as constructor arg
-	public GuiButtonSam(int buttonId, int x, int y, int widthIn, int heightIn,String buttonText) 
-	{
-		super(buttonId, x, y, widthIn, heightIn, buttonText);
-	}
-    public GuiButtonSam(int buttonId, int x, int y, String buttonText)
+	private EntityPlayer player;
+    public GuiButtonSam(int buttonId, int x, int y, int w,int h,String buttonText, EntityPlayer player)
     {
-    	super(buttonId, x, y, 200, 20, buttonText);
+    	super(buttonId, x, y, w,h, buttonText);
+    	this.player = player;
     }
     
     @Override
@@ -29,16 +28,19 @@ public class GuiButtonSam extends GuiButton
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
     {
-    	boolean flag = super.mousePressed(mc, mouseX, mouseY);
+    	boolean pressed = super.mousePressed(mc, mouseX, mouseY);
     	
-    	if(flag)
+    	if(pressed)
     	{
     		//do what the button is meant to do
     	//	System.out.println("client side btn pressed");
     		//send packet to server from client (this) makes sense
-    		
+    		NBTTagCompound tags = new NBTTagCompound();
+    		tags.setInteger("world", this.player.worldObj.provider.getDimensionId());
+    		tags.setString("player", this.player.getName());
+    		ModInvCrafting.instance.network.sendToServer(new ButtonPacket(tags));
     	}
     	
-    	return flag;
+    	return pressed;
     }
 }
