@@ -39,7 +39,7 @@ public class GuiInventoryCrafting extends GuiInventory
 		
 		if(this.container != null && this.mc.playerController.isInCreativeMode() == false)
 		{
-			GuiButtonSam button = new GuiButtonSam(100, this.guiLeft + 99, this.guiTop + 5,50,15, "text",this.mc.thePlayer);
+			GuiButtonSam button = new GuiButtonSam(100, this.guiLeft + 120, this.guiTop + 2,50,15, "text",this.mc.thePlayer);
 			this.buttonList.add(button);
 			
 		}

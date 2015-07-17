@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class ButtonPacket implements IMessage 
+public class ButtonPacket implements IMessage , IMessageHandler<ButtonPacket, IMessage>
 {
 	public ButtonPacket() {}
 	NBTTagCompound tags = new NBTTagCompound();
@@ -31,18 +31,16 @@ public class ButtonPacket implements IMessage
 		ByteBufUtils.writeTag(buf, this.tags);
 	}
 
-	public class HandleButtonPacket implements IMessageHandler<ButtonPacket, IMessage>
+
+	@Override
+	public IMessage onMessage(ButtonPacket message, MessageContext ctx)
 	{
-		@Override
-		public IMessage onMessage(ButtonPacket message, MessageContext ctx)
-		{
-			System.out.println("packet handler got it");
-			return message;
-			
-			//todo: server handle the button press from inventory
-			
-			
-			//return null
-		}
+		System.out.println("packet handler got it");
+
+		//todo: server handle the button press from inventory
+		
+		
+		return null;
+	
 	}
 }
