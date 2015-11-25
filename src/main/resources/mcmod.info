@@ -2,8 +2,8 @@
   "modListVersion": 2,
   "modList": [{
     "modid": "samsinvcrafting",
-    "name": "Inventory Crafting : a 3x3 crafting grid right in your inventory",
-    "description": ".",
+    "name": "Inventory Crafting",
+    "description": "A 3x3 crafting grid right in your inventory.  This mod will conflict with other mods that replace or modify the players inventory.",
     "version": "1.8-1.0.2",
     "mcversion": "1.8",
     "url": "http://www.curse.com/mc-mods/minecraft/232597-inventory-crafting-grid",
