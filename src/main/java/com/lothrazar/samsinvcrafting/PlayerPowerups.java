@@ -35,9 +35,6 @@ public class PlayerPowerups implements IExtendedEntityProperties
 	public static final void register(EntityPlayer player)
 	{
 		player.registerExtendedProperties(PlayerPowerups.EXT_PROP_NAME, new PlayerPowerups(player));
-		
-
-		
 	}
 
 	public static final PlayerPowerups get(EntityPlayer player)
@@ -62,24 +59,9 @@ public class PlayerPowerups implements IExtendedEntityProperties
 		   ((InventoryPlayerCrafting)this.player.inventory).readFromNBT(compound.getTagList("Inventory", 10));
 		 }
  	}
-   /*
-	public void copy(PlayerPowerups props) 
-	{
-		//thanks for the help https://github.com/coolAlias/Tutorial-Demo/blob/master/src/main/java/tutorial/entity/ExtendedPlayer.java
-
-		//set in the player 
-		player.getDataWatcher().updateObject(SPELLMAIN_WATCHER, props.getSpellCurrent()); 
-		player.getDataWatcher().updateObject(SPELLTOG_WATCHER, props.getSpellToggle()); 
-		player.getDataWatcher().updateObject(SPELLTIMER_WATCHER, props.getSpellTimer()); 
-		//set here  
-		this.setSpellCurrent(props.getSpellCurrent());  
-		this.setSpellToggle(props.getSpellToggle());   
-		this.setSpellTimer(props.getSpellTimer()); 
-	}*/
+ 
 	public void onJoinWorld() 
 	{
-
-
 		if (this.player.inventory instanceof InventoryPlayerCrafting == false)
 		{
 			this.player.inventory = new InventoryPlayerCrafting(this.player);
@@ -92,9 +74,5 @@ public class PlayerPowerups implements IExtendedEntityProperties
 		    this.player.inventory.readFromNBT(this.prevPlayer.inventory.writeToNBT(new NBTTagList()));
 		    this.prevPlayer = null;
 	    }
-	    
-
-		
 	}
- 
 }

@@ -84,7 +84,6 @@ public class ContainerPlayerCrafting extends ContainerPlayer
             	else
             	{
             		//add only the initial 2x2 grid now (numbers 1-4 inclusive, 0 is the output slot id)
-	            	//System.out.println("("+slotNumber+","+cx+","+cy+");");
 	                this.addSlotToContainer(new Slot(this.craftMatrix, slotNumber, cx , cy ));
             	}   
             }
@@ -124,7 +123,6 @@ public class ContainerPlayerCrafting extends ContainerPlayer
                     return ItemArmor.EMPTY_SLOT_NAMES[k];
                 }
             }); 
-          	//System.out.println("("+slotNumber+", armor);"+cx+","+cy);
         }
         //inventory is 3 rows by 9 columns
         for (var4 = 0; var4 < 3; ++var4)
@@ -135,7 +133,6 @@ public class ContainerPlayerCrafting extends ContainerPlayer
             	cx = 8 + var5 * 18;
             	cy = 84 + var4 * 18;
                 this.addSlotToContainer(new Slot(player.inventory,slotNumber , cx, cy)); 
-              //	System.out.println("("+slotNumber+", reg inventory);");
             }
         }
 
@@ -145,7 +142,6 @@ public class ContainerPlayerCrafting extends ContainerPlayer
         	cx = 8 + var4 * 18;
         	cy = 142;
             this.addSlotToContainer(new Slot(player.inventory, var4, cx, cy)); 
-           // System.out.println("("+slotNumber+", hotbar);");
         }
         
         if(craftSize == 3)// Finally, add the five new slots to the 3x3 crafting grid (they end up being 45-49 inclusive)
@@ -156,7 +152,6 @@ public class ContainerPlayerCrafting extends ContainerPlayer
 	    		cx = holdX[h];
 	    		cy = holdY[h];
 	        	this.addSlotToContainer(new Slot(this.craftMatrix, slotNumber, cx , cy ));
-	          	//System.out.println("("+slotNumber+","+cx+","+cy+" -from hold);");
 	        }
         }
 
