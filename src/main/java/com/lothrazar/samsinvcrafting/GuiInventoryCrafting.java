@@ -31,17 +31,4 @@ public class GuiInventoryCrafting extends GuiInventory
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
-	
-	@Override
-	public void initGui()
-    {
-		super.initGui();
-		
-		if(this.container != null && this.mc.playerController.isInCreativeMode() == false)
-		{
-			GuiButtonSam button = new GuiButtonSam(100, this.guiLeft + 120, this.guiTop + 2,50,15, "text",this.mc.thePlayer);
-			this.buttonList.add(button);
-			
-		}
-    }
 }

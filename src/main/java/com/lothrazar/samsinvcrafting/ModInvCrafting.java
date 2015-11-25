@@ -31,14 +31,11 @@ public class ModInvCrafting
 	@SidedProxy(clientSide="com.lothrazar.samsinvcrafting.ClientProxy", serverSide="com.lothrazar.samsinvcrafting.CommonProxy")
 	public static CommonProxy proxy;   
 	public static Logger logger; 
-	public SimpleNetworkWrapper network;
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
     	logger = event.getModLog();
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
-    	network.registerMessage(ButtonPacket.class, ButtonPacket.class, ButtonPacket.ID, Side.SERVER);
-		
+
 		proxy.registerRenderers();
 		
 		MinecraftForge.EVENT_BUS.register(instance);
