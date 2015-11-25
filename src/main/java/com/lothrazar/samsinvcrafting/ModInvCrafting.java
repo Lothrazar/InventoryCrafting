@@ -3,8 +3,10 @@ package com.lothrazar.samsinvcrafting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -19,13 +21,12 @@ public class ModInvCrafting
 {
     public static final String MODID = "samsinvcrafting"; 
 	@Instance(value = MODID)
-	public static ModInvCrafting instance;
-	@SidedProxy(clientSide="com.lothrazar.samsinvcrafting.ClientProxy", serverSide="com.lothrazar.samsinvcrafting.CommonProxy")
-	public static CommonProxy proxy;   
+	public static ModInvCrafting instance;  
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-		proxy.registerRenderers();
+		MinecraftForge.EVENT_BUS.register(ModInvCrafting.instance);
+		FMLCommonHandler.instance().bus().register(ModInvCrafting.instance);
     }
     
     @SideOnly(Side.CLIENT)
