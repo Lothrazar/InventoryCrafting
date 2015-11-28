@@ -6,9 +6,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -25,8 +23,7 @@ public class ModInvCrafting
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-		MinecraftForge.EVENT_BUS.register(ModInvCrafting.instance);
-		FMLCommonHandler.instance().bus().register(ModInvCrafting.instance);
+		MinecraftForge.EVENT_BUS.register(ModInvCrafting.instance);  
     }
     
     @SideOnly(Side.CLIENT)

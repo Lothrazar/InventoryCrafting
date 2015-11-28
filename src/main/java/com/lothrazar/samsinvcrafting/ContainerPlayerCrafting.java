@@ -100,7 +100,6 @@ public class ContainerPlayerCrafting extends ContainerPlayer
             final int k = var4;
             this.addSlotToContainer(new Slot(player.inventory,slotNumber, cx, cy)
             {
-                private static final String __OBFID = "CL_00001755";
                 /**
                  * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1
                  * in the case of armor slots)
