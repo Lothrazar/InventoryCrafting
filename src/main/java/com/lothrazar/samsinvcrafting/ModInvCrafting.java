@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = ModInvCrafting.MODID, useMetadata=true)
+@Mod(modid = ModInvCrafting.MODID, useMetadata=true, updateJSON = "https://raw.githubusercontent.com/LothrazarMinecraftMods/InventoryCrafting/master/update.json")
 public class ModInvCrafting
 {
     public static final String MODID = "samsinvcrafting"; 
