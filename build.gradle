@@ -15,14 +15,15 @@ apply plugin: 'eclipse'
  
  
 
-version = "1.8.8-1.0.3"
+version = "1.8.9-1.0.3"
 group= "com.lothrazar.samsinvcrafting" 
 archivesBaseName = "InventoryCrafting"
 
 minecraft {
-    version = "1.8.8-11.14.4.1589-1.8.8"
-    mappings = "snapshot_20151122"
-    runDir = "eclipse"
+    version = "1.8.9-11.15.0.1693"
+    runDir = "run"
+    
+    mappings = "stable_20"
 }
 
 dependencies {

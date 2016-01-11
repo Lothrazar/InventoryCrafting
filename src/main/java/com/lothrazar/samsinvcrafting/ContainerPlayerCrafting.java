@@ -164,7 +164,7 @@ public class ContainerPlayerCrafting extends ContainerPlayer
 
         for (int i = 0; i < craftSize*craftSize; ++i) // was 4
         {
-            ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
+            ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
 
             if (itemstack != null)
             {

@@ -24,3 +24,4 @@ crash-reports/
 *.tis
 .recommenders/
 .gitattributes
+*.launch
