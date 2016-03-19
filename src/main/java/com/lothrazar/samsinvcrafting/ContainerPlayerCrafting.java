@@ -1,9 +1,9 @@
 package com.lothrazar.samsinvcrafting;
 
 import com.google.common.collect.Lists;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ContainerPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
@@ -114,7 +114,10 @@ public class ContainerPlayerCrafting extends ContainerPlayer
                 public boolean isItemValid(ItemStack stack)
                 {
                     if (stack == null) return false;
-                    return stack.getItem().isValidArmor(stack, k, thePlayer);
+                  //  stack.getItem().isValidArmor(stack, armorType, entity)
+                    //armorType Armor slot ID: 0: Helmet, 1: Chest, 2: Legs, 3: Boots
+                    
+                    return stack.getItem().isValidArmor(stack, EntityEquipmentSlot.values()[k], thePlayer);
                 }
                 @SideOnly(Side.CLIENT)
                 public String getSlotTexture()

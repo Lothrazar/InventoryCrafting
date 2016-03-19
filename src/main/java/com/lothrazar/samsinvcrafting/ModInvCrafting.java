@@ -43,11 +43,20 @@ public class ModInvCrafting
     	{
     		EntityPlayer player = (EntityPlayer)event.entity;
     		
+    		System.out.println("IEE join world");
+    		/*
     		PlayerPowerups power = PlayerPowerups.get(player);
     		if(power != null)
     		{
     			power.onJoinWorld();
-    		}
+    		}*/
+    		if (player.inventory instanceof InventoryPlayerCrafting == false)
+    		{
+    			player.inventory = new InventoryPlayerCrafting(player);
+    			player.inventoryContainer = new ContainerPlayerCrafting((InventoryPlayerCrafting)player.inventory, !player.worldObj.isRemote, player);
+    			player.openContainer = player.inventoryContainer;
+    	    }
+    	    
     	}
     }
     
@@ -56,12 +65,14 @@ public class ModInvCrafting
     {
     	if ((event.entity instanceof EntityPlayer))
     	{
+
+    		System.out.println("IEE register");
+    		/*
     		EntityPlayer player = (EntityPlayer)event.entity;
-  
     		if (PlayerPowerups.get(player) == null)
     		{
     			PlayerPowerups.register(player);
-    		}
+    		}*/
     	}
     }
 }

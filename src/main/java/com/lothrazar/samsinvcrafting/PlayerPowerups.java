@@ -31,9 +31,10 @@ public class PlayerPowerups implements IExtendedEntityProperties
 		    this.player = ((EntityPlayer)entity);
 		 }
 	}	
-	
+	/*
 	public static final void register(EntityPlayer player)
 	{
+		
 		player.registerExtendedProperties(PlayerPowerups.EXT_PROP_NAME, new PlayerPowerups(player));
 	}
 
@@ -41,7 +42,7 @@ public class PlayerPowerups implements IExtendedEntityProperties
 	{
 		return (PlayerPowerups) player.getExtendedProperties(EXT_PROP_NAME);
 	}
-
+*/
 	@Override
 	public void saveNBTData(NBTTagCompound compound) 
 	{
