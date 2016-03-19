@@ -7,8 +7,19 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
-public class PlayerPowerups implements IExtendedEntityProperties
+public class PlayerPowerups // implements IExtendedEntityProperties
 {
+/*
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	private final static String EXT_PROP_NAME = ModInvCrafting.MODID;
 	private EntityPlayer player;//we get one of these powerup classes for each player
 	private EntityPlayer prevPlayer;
@@ -31,7 +42,7 @@ public class PlayerPowerups implements IExtendedEntityProperties
 		    this.player = ((EntityPlayer)entity);
 		 }
 	}	
-	/*
+
 	public static final void register(EntityPlayer player)
 	{
 		
@@ -42,7 +53,7 @@ public class PlayerPowerups implements IExtendedEntityProperties
 	{
 		return (PlayerPowerups) player.getExtendedProperties(EXT_PROP_NAME);
 	}
-*/
+
 	@Override
 	public void saveNBTData(NBTTagCompound compound) 
 	{
@@ -76,4 +87,5 @@ public class PlayerPowerups implements IExtendedEntityProperties
 		    this.prevPlayer = null;
 	    }
 	}
+	*/
 }
