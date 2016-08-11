@@ -137,7 +137,7 @@ public class ContainerPlayerCrafting extends ContainerPlayer
 
             if (itemstack != null)
             {
-                playerIn.dropPlayerItemWithRandomChoice(itemstack, false);
+                playerIn.dropItem(itemstack, false);
             }
         }
 
