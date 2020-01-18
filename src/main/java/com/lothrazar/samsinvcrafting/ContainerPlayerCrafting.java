@@ -31,19 +31,17 @@ public class ContainerPlayerCrafting extends ContainerPlayer
 		craftMatrix = new InventoryCrafting(this, craftSize, craftSize);
 
         //start of copy 1.9
-		this.addSlotToContainer(new SlotCrafting(playerInventory.player, this.craftMatrix, this.craftResult, 0, 154, 28));
+		this.addSlotToContainer(new SlotCrafting(playerInventory.player, this.craftMatrix, this.craftResult, 0, 154, 24));
 
 		int x,y,slot;
         for (int i = 0; i < craftSize; ++i)
         {
             for (int j = 0; j < craftSize; ++j)
             {
-            	x = 98 + j * 18;
-            	y = 18 + i * 18;
+            	x = 82 + j * 18;
+            	y = 8 + i * 18;
             	slot = j + i * craftSize;
-            	x -= 12;
-            	y -= 10;
-            	
+            	 
             	if(debug)System.out.println(slot+" crafting");
                 this.addSlotToContainer(new Slot(this.craftMatrix, slot, x,y));
             }
@@ -53,8 +51,8 @@ public class ContainerPlayerCrafting extends ContainerPlayer
         {
             final EntityEquipmentSlot entityequipmentslot = field_185003_h[k];
             slot=36 + (3 - k);
-            x= 8;
-            y= 8 + k * 18;
+            x = 8;
+            y = 8 + k * 18;
             if(debug)System.out.println(slot+" armor");
             this.addSlotToContainer(new Slot(playerInventory, slot,x,y)
             {
