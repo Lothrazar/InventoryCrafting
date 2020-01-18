@@ -1,4 +1,4 @@
-package com.lothrazar.samsinvcrafting;
+package com.lothrazar.invcrafting;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

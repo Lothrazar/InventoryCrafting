@@ -1,4 +1,4 @@
-package com.lothrazar.samsinvcrafting;
+package com.lothrazar.invcrafting;
 
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;

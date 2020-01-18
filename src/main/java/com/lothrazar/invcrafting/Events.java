@@ -1,4 +1,4 @@
-package com.lothrazar.samsinvcrafting;
+package com.lothrazar.invcrafting;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

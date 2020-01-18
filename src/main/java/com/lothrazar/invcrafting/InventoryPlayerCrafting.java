@@ -1,4 +1,4 @@
-package com.lothrazar.samsinvcrafting;
+package com.lothrazar.invcrafting;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

@@ -1,4 +1,4 @@
-package com.lothrazar.samsinvcrafting;
+package com.lothrazar.invcrafting;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
