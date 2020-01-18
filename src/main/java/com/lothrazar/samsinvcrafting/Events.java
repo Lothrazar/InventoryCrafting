@@ -2,6 +2,7 @@ package com.lothrazar.samsinvcrafting;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -23,9 +24,15 @@ public class Events{
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event){
-	  Gui gui = event.getGui();
-		if(gui != null && gui.getClass() == net.minecraft.client.gui.inventory.GuiInventory.class && gui instanceof GuiInventoryCrafting == false){
+		if(event.getGui()==null) {
+			return;
+		}
+		GuiScreen gui = event.getGui();
+		 
+		if(  gui.getClass() == net.minecraft.client.gui.inventory.GuiInventory.class && gui instanceof GuiInventoryCrafting == false){
+		 
 			gui = new GuiInventoryCrafting(Minecraft.getMinecraft().thePlayer);
+		event.setGui( gui);
 		}
 	}
 

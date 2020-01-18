@@ -16,7 +16,7 @@ public class GuiInventoryCrafting extends GuiInventory
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
-	{
+	{ 
 		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.getTextureManager().bindTexture(new net.minecraft.util.ResourceLocation(ModInvCrafting.MODID, "textures/gui/inventorycraft.png"));
@@ -29,6 +29,6 @@ public class GuiInventoryCrafting extends GuiInventory
 	@Override
 	public void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+		//super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 }

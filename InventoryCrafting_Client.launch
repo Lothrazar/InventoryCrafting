@@ -9,5 +9,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="GradleStart"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="InventoryCrafting"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DFORGE_FORCE_FRAME_RECALC=true"/>
-<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="C:\Users\OWNER\Documents\forge_multi\InventoryCrafting\run"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="C:\code\mc110\InventoryCrafting\run"/>
 </launchConfiguration>
