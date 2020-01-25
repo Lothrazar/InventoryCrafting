@@ -1,21 +1,16 @@
+[
 {
-  "modListVersion": 2,
-  "modList": [{
-    "modid": "samsinvcrafting",
-    "name": "Inventory Crafting",
-    "description": "A 3x3 crafting grid right in your inventory.  This mod will conflict with other mods that replace or modify the players inventory.",
-    "version": "1.0.3",
-    "mcversion": "1.9",
-    "url": "http://www.curse.com/mc-mods/minecraft/232597-inventory-crafting-grid",
-    "updateUrl": "http://www.curse.com/mc-mods/minecraft/232597-inventory-crafting-grid",
-    "authorList": [ "Lothrazar" ],
-    "credits": "The Forge and FML guys",
-    "logoFile": "",
-    "screenshots": [  ],
-    "parent": "",
-    "requiredMods": [ "Forge" ],
-    "dependencies": [  ],
-    "dependants": [  ],
-    "useDependencyInformation": false
-  }]
+  "modid": "invcrafting",
+  "name": "Inventory Crafting Grid",
+  "description": "A 3x3 crafting grid right in your inventory.  This mod will conflict with other mods that replace or modify the players inventory.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Lothrazar","natering","TheDarkColour"],
+  "credits": "The Forge and FML guys.  natering and TheDarkColour for huge port from 1.8 to 1.12",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
 }
+]
