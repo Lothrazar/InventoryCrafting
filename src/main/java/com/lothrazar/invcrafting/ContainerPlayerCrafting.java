@@ -1,71 +1,70 @@
 package com.lothrazar.invcrafting;
 
 import com.google.common.collect.Lists;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.CraftingResultSlot;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ContainerPlayerCrafting extends ContainerPlayer {
+public class ContainerPlayerCrafting extends PlayerContainer {
 
-  private static final EntityEquipmentSlot[] ARMOR = new EntityEquipmentSlot[] { EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
+  private static final EquipmentSlotType[] ARMOR = new EquipmentSlotType[] { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
   private int craftSize = 3;//did not exist before, was magic'd as 2 everywhere
+  private CraftingInventory field_75181_e;
 
-  public ContainerPlayerCrafting(InventoryPlayerCrafting playerInventory, boolean localWorld, EntityPlayer player) {
+  public ContainerPlayerCrafting(InventoryPlayerCrafting playerInventory, boolean localWorld, PlayerEntity player) {
     super(playerInventory, localWorld, player);
     inventorySlots = Lists.newArrayList();//undo everything done by super()
-    craftMatrix = new InventoryCrafting(this, craftSize, craftSize);
+    field_75181_e = new CraftingInventory(this, craftSize, craftSize);
     //start of copy 1.9
-    this.addSlotToContainer(new SlotCrafting(playerInventory.player, this.craftMatrix, this.craftResult, 0, 154, 24));
+    this.addSlot(new CraftingResultSlot(playerInventory.player, this.craftMatrix, this.craftResult, 0, 154, 24));
     int x, y, slot;
     for (int i = 0; i < craftSize; ++i) {
       for (int j = 0; j < craftSize; ++j) {
         x = 82 + j * 18;
         y = 8 + i * 18;
         slot = j + i * craftSize;
-        this.addSlotToContainer(new Slot(this.craftMatrix, slot, x, y));
+        this.addSlot(new Slot(this.field_75181_e, slot, x, y));
       }
     }
     for (int k = 0; k < 4; ++k) {
-      final EntityEquipmentSlot entityequipmentslot = ARMOR[k];
+      final EquipmentSlotType entityequipmentslot = ARMOR[k];
       slot = 36 + (3 - k);
       x = 8;
       y = 8 + k * 18;
-      this.addSlotToContainer(new Slot(playerInventory, slot, x, y) {
-
-        /**
-         * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the case of armor slots)
-         */
-        @Override
-        public int getSlotStackLimit() {
-          return 1;
-        }
-
-        /**
-         * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
-         */
-        @Override
-        public boolean isItemValid(ItemStack stack) {
-          if (stack == null || stack.isEmpty()) {
-            return false;
-          }
-          else {
-            return stack.getItem().isValidArmor(stack, entityequipmentslot, player);
-          }
-        }
-
-        @Override
-        @SideOnly(Side.CLIENT)
-        public String getSlotTexture() {
-          return ItemArmor.EMPTY_SLOT_NAMES[entityequipmentslot.getIndex()];
-        }
-      });
+      this.addSlot(new Slot(playerInventory, slot, x, y)// {
+      //
+      //        /**
+      //         * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the case of armor slots)
+      //         */
+      //        @Override
+      //        public int getSlotStackLimit() {
+      //          return 1;
+      //        }
+      //
+      //        /**
+      //         * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
+      //         */
+      //        @Override
+      //        public boolean isItemValid(ItemStack stack) {
+      //          if (stack == null || stack.isEmpty()) {
+      //            return false;
+      //          }
+      //          else {
+      //            return stack.getItem().isValidArmor(stack, entityequipmentslot, player);
+      //          }
+      //        }
+      //
+      //        @Override
+      //        @SideOnly(Side.CLIENT)
+      //        public String getSlotTexture() {
+      //          return ItemArmor.EMPTY_SLOT_NAMES[entityequipmentslot.getIndex()];
+      //        }
+      // }
+      );
     }
     for (int l = 0; l < 3; ++l) {
       for (int j1 = 0; j1 < 9; ++j1) {
