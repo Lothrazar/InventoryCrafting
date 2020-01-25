@@ -25,6 +25,6 @@ public class GuiInventoryCrafting extends GuiInventory {
 
   @Override
   public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-//    super.drawGuiContainerForegroundLayer(mouseX, mouseY); 
+    // do not call super here to disable the title text rendering on screen
   }
 }
