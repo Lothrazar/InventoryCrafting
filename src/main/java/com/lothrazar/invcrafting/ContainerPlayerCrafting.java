@@ -19,7 +19,7 @@ public class ContainerPlayerCrafting extends ContainerPlayer {
  
   public ContainerPlayerCrafting(InventoryPlayerCrafting playerInventory, boolean localWorld, EntityPlayer player) {
     super(playerInventory, localWorld, player);
-    boolean debug = false;
+ 
     inventorySlots = Lists.newArrayList();//undo everything done by super()
      craftMatrix = new InventoryCrafting(this, craftSize, craftSize);
     //start of copy 1.9
@@ -29,8 +29,7 @@ public class ContainerPlayerCrafting extends ContainerPlayer {
       for (int j = 0; j < craftSize; ++j) {
         x = 82 + j * 18;
         y = 8 + i * 18;
-        slot = j + i * craftSize;
-        if (debug) System.out.println(slot + " crafting");
+        slot = j + i * craftSize; 
         this.addSlotToContainer(new Slot(this.craftMatrix, slot, x, y));
       }
     }
@@ -38,8 +37,7 @@ public class ContainerPlayerCrafting extends ContainerPlayer {
       final EntityEquipmentSlot entityequipmentslot = ARMOR[k];
       slot = 36 + (3 - k);
       x = 8;
-      y = 8 + k * 18;
-      if (debug) System.out.println(slot + " armor");
+      y = 8 + k * 18; 
       this.addSlotToContainer(new Slot(playerInventory, slot, x, y) {
 
         /**
@@ -74,22 +72,19 @@ public class ContainerPlayerCrafting extends ContainerPlayer {
       for (int j1 = 0; j1 < 9; ++j1) {
         slot = j1 + (l + 1) * 9;
         x = 8 + j1 * 18;
-        y = 84 + l * 18;
-        if (debug) System.out.println(slot + " invo");
+        y = 84 + l * 18; 
         this.addSlotToContainer(new Slot(playerInventory, slot, x, y));
       }
     }
     for (int i1 = 0; i1 < 9; ++i1) {
       slot = i1;
       x = 8 + i1 * 18;
-      y = 142;
-      if (debug) System.out.println(slot + " hotbar");
+      y = 142; 
       this.addSlotToContainer(new Slot(playerInventory, slot, x, y));
     }
     slot = 40;
     x = 77;
-    y = 62;
-    if (debug) System.out.println(slot + " shield");
+    y = 62; 
     this.addSlotToContainer(new Slot(playerInventory, slot, x, y) {
 
       /**
