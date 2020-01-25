@@ -28,7 +28,6 @@ public class Events {
   public void onEntityJoinWorld(EntityJoinWorldEvent event) {
     if (event.getEntity() instanceof EntityPlayer) {
       EntityPlayer player = (EntityPlayer) event.getEntity();
- 
       /* PlayerPowerups power = PlayerPowerups.get(player); if(power != null) { power.onJoinWorld(); } */
       if (player.inventory instanceof InventoryPlayerCrafting == false) {
         player.inventory = new InventoryPlayerCrafting(player);
@@ -37,6 +36,4 @@ public class Events {
       }
     }
   }
-
- 
 }
