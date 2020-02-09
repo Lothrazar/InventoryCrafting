@@ -8,7 +8,7 @@ modLoader="javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
 loaderVersion="[26,)" #mandatory (26 is current forge version)
 # A URL to refer people to when problems occur with this mod
-issueTrackerURL="https://github.com/Lothrazar/invcrafting/issues" #optional
+issueTrackerURL="https://github.com/LothrazarMinecraftMods/InventoryCrafting/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
@@ -18,9 +18,9 @@ version="${file.jarVersion}" #mandatory
  # A display name for the mod
 displayName="invcrafting" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
-updateJSONURL="https://raw.githubusercontent.com/Lothrazar/invcrafting/master/update.json" #optional
+updateJSONURL="https://raw.githubusercontent.com/LothrazarMinecraftMods/InventoryCrafting/master/update.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="http://minecraft.curseforge.com/projects/invcrafting" #optional
+displayURL="https://www.curseforge.com/minecraft/mc-mods/inventory-crafting-grid" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="invcrafting.png" #optional
 # A text field displayed in the mod UI
@@ -29,7 +29,7 @@ credits="Thanks for this example mod goes to Java" #optional
 authors="Lothrazar" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-A small mod by Lothrazar
+Replace your 2x2 inventory with a 3x3 crafting grid 
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.invcrafting]] #optional
@@ -38,7 +38,7 @@ A small mod by Lothrazar
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[30,)" #mandatory
+    versionRange="[31.1,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -47,6 +47,6 @@ A small mod by Lothrazar
 [[dependencies.invcrafting]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.1]"
+    versionRange="[1.15.2]"
     ordering="NONE"
     side="BOTH"

@@ -1,54 +1,45 @@
 package com.lothrazar.invcrafting;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class ContainerPlayerCrafting extends PlayerContainer {
 
-  private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] { field_226619_g_, field_226618_f_, field_226617_e_, field_226616_d_ };
+  private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] { EMPTY_ARMOR_SLOT_BOOTS, EMPTY_ARMOR_SLOT_LEGGINGS, EMPTY_ARMOR_SLOT_CHESTPLATE, EMPTY_ARMOR_SLOT_HELMET };
   private static final EquipmentSlotType[] ARMOR = new EquipmentSlotType[] { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
   private int craftSize = 3;//did not exist before, was magic'd as 2 everywhere
   private CraftingInventory craftMatrix;//field_75181_e 
+  private CraftResultInventory craftResult_;
+  private final PlayerEntity player;
 
   public ContainerPlayerCrafting(InventoryPlayerCrafting playerInventory, boolean localWorld, PlayerEntity player) {
     super(playerInventory, localWorld, player);
-    // 
+    this.player = player;
     //
-    try {
-      Field m = ObfuscationReflectionHelper.findField(Container.class, "field_75151_b");// "inventorySlots");
-      m.setAccessible(true);
-      m.set(this, Lists.newArrayList());
-    }
-    catch (Exception e) {
-      ModInvCrafting.LOGGER.error(" Slots error", e);
-    }
-    try {
-      //    this.field_75181_e = new CraftingInventory(this, craftSize, craftSize); 
-      Field m = ObfuscationReflectionHelper.findField(PlayerContainer.class, "field_75181_e");//"craftMatrix"
-      m.setAccessible(true);
-      m.set(this, new CraftingInventory(this, craftSize, craftSize));
-      //
-      this.craftMatrix = (CraftingInventory) m.get(this);
-      this.addSlot(new CraftingResultSlot(playerInventory.player, craftMatrix, craftMatrix, 0, 154, 24));
-    }
-    catch (Exception e) {
-      ModInvCrafting.LOGGER.error(" Slots error", e);
-    }
+    initInventorySlots();
+    initCraftingGrid(playerInventory);
     //crafting result slot using this new 3x3
     int x, y, slot;
     for (int i = 0; i < craftSize; ++i) {
@@ -85,7 +76,7 @@ public class ContainerPlayerCrafting extends PlayerContainer {
         @Override
         @OnlyIn(Dist.CLIENT)
         public Pair<ResourceLocation, ResourceLocation> func_225517_c_() {
-          return Pair.of(PlayerContainer.field_226615_c_, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
+          return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
         }
       });
     }
@@ -119,32 +110,64 @@ public class ContainerPlayerCrafting extends PlayerContainer {
       @Override
       @OnlyIn(Dist.CLIENT)
       public Pair<ResourceLocation, ResourceLocation> func_225517_c_() {
-        return Pair.of(PlayerContainer.field_226615_c_, PlayerContainer.field_226620_h_);
+        return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, PlayerContainer.EMPTY_ARMOR_SLOT_SHIELD);
       }
     });
     this.onCraftMatrixChanged(this.craftMatrix);
   }
 
-  @Override
-  public void onContainerClosed(PlayerEntity playerIn) {
-    super.onContainerClosed(playerIn);
-    for (int i = 0; i < craftSize * craftSize; ++i) // was 4
-    {
-      ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
-      if (itemstack != null) {
-        playerIn.dropItem(itemstack, false);
-      }
-    }
-    //
+  private void initCraftingGrid(InventoryPlayerCrafting playerInventory) {
     try {
-      Field m = ObfuscationReflectionHelper.findField(PlayerContainer.class, "field_75179_f");// "inventorySlots");
+      Field m = ObfuscationReflectionHelper.findField(PlayerContainer.class, "field_75181_e");//"craftMatrix"
       m.setAccessible(true);
-      CraftResultInventory field_75179_f = (CraftResultInventory) m.get(this);
-      //basically saetting this 
-      field_75179_f.setInventorySlotContents(0, ItemStack.EMPTY);
+      m.set(this, new CraftingInventory(this, craftSize, craftSize));
+      this.craftMatrix = (CraftingInventory) m.get(this);
+      //craftResult == field_75160_f
+      Field mResult = ObfuscationReflectionHelper.findField(PlayerContainer.class, "field_75160_f");//"craftResult"
+      mResult.setAccessible(true);
+      craftResult_ = (CraftResultInventory) mResult.get(this);
+      //field_75181_e is the 3x3 
+      this.addSlot(new CraftingResultSlot(playerInventory.player, craftMatrix, craftResult_, 0, 154, 24));
     }
     catch (Exception e) {
-      ModInvCrafting.LOGGER.error("Craft result error", e);
+      ModInvCrafting.LOGGER.error(" Slots error", e);
+    }
+  }
+
+  private void initInventorySlots() {
+    try {
+      Field m = ObfuscationReflectionHelper.findField(Container.class, "field_75151_b");// "inventorySlots");
+      m.setAccessible(true);
+      m.set(this, Lists.newArrayList());
+    }
+    catch (Exception e) {
+      ModInvCrafting.LOGGER.error(" Slots error", e);
+    }
+  }
+
+  @Override
+  public void onCraftMatrixChanged(IInventory inventoryIn) {
+    try {
+      func_217066_a(this.windowId, this.player.world, this.player, this.craftMatrix, this.craftResult_);
+    }
+    catch (Exception e) {
+      ModInvCrafting.LOGGER.error("crafting error", e);
+    }
+  }
+
+  protected static void func_217066_a(int p_217066_0_, World p_217066_1_, PlayerEntity p_217066_2_, CraftingInventory p_217066_3_, CraftResultInventory p_217066_4_) {
+    if (!p_217066_1_.isRemote) {
+      ServerPlayerEntity serverplayerentity = (ServerPlayerEntity) p_217066_2_;
+      ItemStack itemstack = ItemStack.EMPTY;
+      Optional<ICraftingRecipe> optional = p_217066_1_.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, p_217066_3_, p_217066_1_);
+      if (optional.isPresent()) {
+        ICraftingRecipe icraftingrecipe = optional.get();
+        if (p_217066_4_.canUseRecipe(p_217066_1_, serverplayerentity, icraftingrecipe)) {
+          itemstack = icraftingrecipe.getCraftingResult(p_217066_3_);
+        }
+      }
+      p_217066_4_.setInventorySlotContents(0, itemstack);
+      serverplayerentity.connection.sendPacket(new SSetSlotPacket(p_217066_0_, 0, itemstack));
     }
   }
 }
