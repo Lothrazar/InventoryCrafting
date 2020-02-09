@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -32,15 +31,15 @@ public class Events {
   public void onEntityJoinWorld(EntityJoinWorldEvent event) {
     if (event.getEntity() instanceof PlayerEntity) {
       PlayerEntity player = (PlayerEntity) event.getEntity();
-      /* PlayerPowerups power = PlayerPowerups.get(player); if(power != null) { power.onJoinWorld(); } */
       if (player.inventory instanceof InventoryPlayerCrafting == false) {
         //set not final
         //
         try {
-          Field m = ObfuscationReflectionHelper.findField(InventoryPlayerCrafting.class, "field_75224_c");// "inventory");
+          Field m = ObfuscationReflectionHelper.findField(PlayerEntity.class, "field_75224_c");// "inventory");
           m.setAccessible(true);
           //basically saetting this  
           m.set(player, new InventoryPlayerCrafting(player));
+          ModInvCrafting.LOGGER.error("SET INVENTORY", player.inventory);
         }
         catch (Exception e) {
           ModInvCrafting.LOGGER.error("Events set inventory error", e);
@@ -48,10 +47,11 @@ public class Events {
         //now for container
         //
         try {
-          Field m = ObfuscationReflectionHelper.findField(PlayerContainer.class, "container");// "inventory");//field_71069_bz
+          Field m = ObfuscationReflectionHelper.findField(PlayerEntity.class, "field_71069_bz");// "inventory");//field_71069_bz
           m.setAccessible(true);
           //basically saetting this  
           m.set(player, new ContainerPlayerCrafting((InventoryPlayerCrafting) player.inventory, !player.world.isRemote, player));
+          ModInvCrafting.LOGGER.error("SET CONTAINER", player.container);
         }
         catch (Exception e) {
           ModInvCrafting.LOGGER.error("Events set container error", e);

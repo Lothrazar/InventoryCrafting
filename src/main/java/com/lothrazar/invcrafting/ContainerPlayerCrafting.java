@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.inventory.container.Slot;
@@ -23,12 +24,12 @@ public class ContainerPlayerCrafting extends PlayerContainer {
     // 
     //
     try {
-      Field m = ObfuscationReflectionHelper.findField(PlayerContainer.class, "field_75151_b");// "inventorySlots");
+      Field m = ObfuscationReflectionHelper.findField(Container.class, "field_75151_b");// "inventorySlots");
       m.setAccessible(true);
       m.set(this, Lists.newArrayList());
     }
     catch (Exception e) {
-      ModInvCrafting.LOGGER.error("Horse eating animation error", e);
+      ModInvCrafting.LOGGER.error(" Slots error", e);
     }
     field_75181_e = new CraftingInventory(this, craftSize, craftSize);
     //start of copy 1.9
