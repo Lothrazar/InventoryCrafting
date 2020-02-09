@@ -17,13 +17,16 @@ public class GuiInventoryCrafting extends InventoryScreen {
   @Override
   protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
     super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-    //GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     this.minecraft.getTextureManager().bindTexture(BACKGROUND);
     this.blit(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
+    int i = this.guiLeft;
+    int j = this.guiTop;
+    func_228187_a_(i + 51, j + 75, 30, (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, this.minecraft.player);
   }
 
   @Override
   public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
     // do not call super here to disable the title text rendering on screen
+    //    super.drawGuiContainerForegroundLayer(mouseX, mouseY);
   }
 }
