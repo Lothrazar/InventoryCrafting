@@ -1,6 +1,9 @@
 package com.lothrazar.invcrafting;
 
 import java.lang.reflect.Field;
+import com.lothrazar.invcrafting.inventory.ContainerPlayerCrafting;
+import com.lothrazar.invcrafting.inventory.GuiInventoryCrafting;
+import com.lothrazar.invcrafting.inventory.InventoryPlayerCrafting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
@@ -39,7 +42,6 @@ public class Events {
           m.setAccessible(true);
           //basically saetting this  
           m.set(player, new InventoryPlayerCrafting(player));
-          ModInvCrafting.LOGGER.error("SET INVENTORY", player.inventory);
         }
         catch (Exception e) {
           ModInvCrafting.LOGGER.error("Events set inventory error", e);
@@ -47,11 +49,10 @@ public class Events {
         //now for container
         //
         try {
-          Field m = ObfuscationReflectionHelper.findField(PlayerEntity.class, "field_71069_bz");// "inventory");//field_71069_bz
+          Field m = ObfuscationReflectionHelper.findField(PlayerEntity.class, "field_71069_bz");// "inventory");
           m.setAccessible(true);
           //basically saetting this  
           m.set(player, new ContainerPlayerCrafting((InventoryPlayerCrafting) player.inventory, !player.world.isRemote, player));
-          ModInvCrafting.LOGGER.error("SET CONTAINER", player.container);
         }
         catch (Exception e) {
           ModInvCrafting.LOGGER.error("Events set container error", e);

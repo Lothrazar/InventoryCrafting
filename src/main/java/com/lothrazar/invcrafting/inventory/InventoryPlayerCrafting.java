@@ -1,4 +1,4 @@
-package com.lothrazar.invcrafting;
+package com.lothrazar.invcrafting.inventory;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

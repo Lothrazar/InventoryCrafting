@@ -1,8 +1,9 @@
-package com.lothrazar.invcrafting;
+package com.lothrazar.invcrafting.inventory;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
 import com.google.common.collect.Lists;
+import com.lothrazar.invcrafting.ModInvCrafting;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;

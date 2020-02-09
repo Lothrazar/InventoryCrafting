@@ -1,5 +1,6 @@
-package com.lothrazar.invcrafting;
+package com.lothrazar.invcrafting.inventory;
 
+import com.lothrazar.invcrafting.ModInvCrafting;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
