@@ -124,7 +124,7 @@ public class ContainerPlayerCrafting extends PlayerContainer {
       m.set(this, new CraftingInventory(this, craftSize, craftSize));
       this.craftMatrix = (CraftingInventory) m.get(this);
       //craftResult == field_75160_f
-      Field mResult = ObfuscationReflectionHelper.findField(PlayerContainer.class, "field_75160_f");//"craftResult"
+      Field mResult = ObfuscationReflectionHelper.findField(PlayerContainer.class, "field_75179_f");//"craftResult"
       mResult.setAccessible(true);
       craftResult_ = (CraftResultInventory) mResult.get(this);
       //field_75181_e is the 3x3 
