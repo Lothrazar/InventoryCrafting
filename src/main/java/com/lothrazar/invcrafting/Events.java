@@ -38,10 +38,21 @@ public class Events {
         //set not final
         //
         try {
-          Field m = ObfuscationReflectionHelper.findField(PlayerEntity.class, "field_75224_c");// "inventory");
-          m.setAccessible(true);
+          Field inventoryField = ObfuscationReflectionHelper.findField(PlayerEntity.class, "field_71071_by");
+          inventoryField.setAccessible(true);
           //basically saetting this  
-          m.set(player, new InventoryPlayerCrafting(player));
+          InventoryPlayerCrafting invCrafting = new InventoryPlayerCrafting(player);
+          for (int i = 0; i < invCrafting.armorInventory.size(); i++) {
+            invCrafting.armorInventory.set(i, player.inventory.armorInventory.get(i));
+          }
+          for (int i = 0; i < invCrafting.mainInventory.size(); i++) {
+            invCrafting.mainInventory.set(i, player.inventory.mainInventory.get(i));
+          }
+          for (int i = 0; i < invCrafting.offHandInventory.size(); i++) {
+            invCrafting.offHandInventory.set(i, player.inventory.offHandInventory.get(i));
+          }
+          invCrafting.currentItem = player.inventory.currentItem;
+          inventoryField.set(player, invCrafting);
         }
         catch (Exception e) {
           ModInvCrafting.LOGGER.error("Events set inventory error", e);
