@@ -22,7 +22,7 @@ public class GuiInventoryCrafting extends InventoryScreen {
     this.blit(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
     int i = this.guiLeft;
     int j = this.guiTop;
-    func_228187_a_(i + 51, j + 75, 30, (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, this.minecraft.player);
+    drawEntityOnScreen(i + 51, j + 75, 30, (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, this.minecraft.player);
   }
 
   @Override
