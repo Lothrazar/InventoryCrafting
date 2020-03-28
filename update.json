@@ -12,7 +12,7 @@
   "1.15.2": {
     "1.0.0": "Release ",
     "1.1.0": "Finished port, fix item loss issue, fix rendering issue. ",
-    "1.1.1": "Fixed crafting output slot "
+    "1.1.1": "Fixed crafting output slot ",
     "1.1.2": "Fixed Shift-Click transfer behavior to match old inventory "
   }
 }
