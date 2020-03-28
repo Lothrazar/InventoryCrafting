@@ -41,3 +41,35 @@ processResources {
     }
 
 }
+
+dependencies {
+
+  deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}" 
+  deobfCompile "baubles:Baubles:1.12:${baubles_version}" 
+ 
+}
+
+
+repositories {
+
+	maven {
+        url = "http://minecraft.curseforge.com/api/maven/"
+    }
+  maven {
+    // location of the maven that hosts JEI files
+    name = "Progwml6 maven"
+    url = "https://dvs1.progwml6.com/files/maven/"
+  }
+  maven {
+    // location of a maven mirror for JEI files, as a fallback
+    name = "ModMaven"
+    url = "https://modmaven.k-4u.nl"
+  }    
+    maven {
+        url = "https://maven.theillusivec4.top/"
+    }
+    maven {
+        url 'http://maven.mcmoddev.com'
+    }
+    
+}
