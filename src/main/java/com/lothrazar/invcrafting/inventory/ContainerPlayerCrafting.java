@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.lothrazar.invcrafting.ModInvCrafting;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
@@ -43,17 +44,33 @@ public class ContainerPlayerCrafting extends PlayerContainer {
     initCraftingGrid(playerInventory);
     //crafting result slot using this new 3x3
     int x, y, slot;
+    int offset = 40;
+    System.out.println("fffffffffffffffff ");
+    //    boolean onHold = false;
+    int h = 0;
+    int[] holdSlot = new int[5];
+    int[] holdX = new int[5];
+    int[] holdY = new int[5];
     for (int i = 0; i < craftSize; ++i) {
       for (int j = 0; j < craftSize; ++j) {
         x = 82 + j * 18;
         y = 8 + i * 18;
         slot = j + i * craftSize;
-        this.addSlot(new Slot(this.craftMatrix, slot, x, y));
+        if (i == 2 || j == 2) {
+          holdSlot[h] = slot;
+          holdX[h] = x;
+          holdY[h] = y;
+          h++;
+        }
+        else {
+          System.out.println("SLOOOOT " + slot);
+          this.addSlot(new Slot(this.craftMatrix, slot, x, y));
+        }
       }
     }
     for (int k = 0; k < 4; ++k) {
       final EquipmentSlotType equipmentslottype = ARMOR[k];
-      slot = 36 + (3 - k);
+      slot = 39 - k;
       x = 8;
       y = 8 + k * 18;
       this.addSlot(new Slot(playerInventory, slot, x, y) {
@@ -81,6 +98,7 @@ public class ContainerPlayerCrafting extends PlayerContainer {
         }
       });
     }
+    //3x9 invo grid
     for (int l = 0; l < 3; ++l) {
       for (int j1 = 0; j1 < 9; ++j1) {
         slot = j1 + (l + 1) * 9;
@@ -89,6 +107,7 @@ public class ContainerPlayerCrafting extends PlayerContainer {
         this.addSlot(new Slot(playerInventory, slot, x, y));
       }
     }
+    // hotbar
     for (int i1 = 0; i1 < 9; ++i1) {
       slot = i1;
       x = 8 + i1 * 18;
@@ -114,6 +133,15 @@ public class ContainerPlayerCrafting extends PlayerContainer {
         return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, PlayerContainer.EMPTY_ARMOR_SLOT_SHIELD);
       }
     });
+    if (craftSize == 3) {// Finally, add the five new slots to the 3x3 crafting grid (they end up being 45-49 inclusive)? shouldnt it be 40-44?
+      for (h = 0; h < 5; ++h) {
+        slot = holdSlot[h];
+        x = holdX[h];
+        y = holdY[h];
+        this.addSlot(new Slot(this.craftMatrix, slot, x, y));
+        System.out.println("(" + slot + "," + x + "," + y + " -from hold);");
+      }
+    }
     this.onCraftMatrixChanged(this.craftMatrix);
   }
 
@@ -170,5 +198,74 @@ public class ContainerPlayerCrafting extends PlayerContainer {
       p_217066_4_.setInventorySlotContents(0, itemstack);
       serverplayerentity.connection.sendPacket(new SSetSlotPacket(p_217066_0_, 0, itemstack));
     }
+  }
+
+  /**
+   * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player inventory and the other inventory(s).
+   */
+  @Override
+  public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    ItemStack itemstack = ItemStack.EMPTY;
+    System.out.println("Transfer " + index);
+    Slot slot = this.inventorySlots.get(index);
+    if (slot != null && slot.getHasStack()) {
+      ItemStack itemstack1 = slot.getStack();
+      itemstack = itemstack1.copy();
+      EquipmentSlotType equipmentslottype = MobEntity.getSlotForItemStack(itemstack);
+      if (index == 0) {
+        if (!this.mergeItemStack(itemstack1, 9, 45, true)) {
+          return ItemStack.EMPTY;
+        }
+        slot.onSlotChange(itemstack1, itemstack);
+      }
+      else if (index >= 1 && index < 5) {
+        if (!this.mergeItemStack(itemstack1, 9, 45, false)) {
+          return ItemStack.EMPTY;
+        }
+      }
+      else if (index >= 5 && index < 9) {
+        if (!this.mergeItemStack(itemstack1, 9, 45, false)) {
+          return ItemStack.EMPTY;
+        }
+      }
+      else if (equipmentslottype.getSlotType() == EquipmentSlotType.Group.ARMOR && !this.inventorySlots.get(8 - equipmentslottype.getIndex()).getHasStack()) {
+        int i = 8 - equipmentslottype.getIndex();
+        if (!this.mergeItemStack(itemstack1, i, i + 1, false)) {
+          return ItemStack.EMPTY;
+        }
+      }
+      else if (equipmentslottype == EquipmentSlotType.OFFHAND && !this.inventorySlots.get(45).getHasStack()) {
+        if (!this.mergeItemStack(itemstack1, 45, 46, false)) {
+          return ItemStack.EMPTY;
+        }
+      }
+      else if (index >= 9 && index < 36) {
+        if (!this.mergeItemStack(itemstack1, 36, 45, false)) {
+          return ItemStack.EMPTY;
+        }
+      }
+      else if (index >= 36 && index < 45) {
+        if (!this.mergeItemStack(itemstack1, 9, 36, false)) {
+          return ItemStack.EMPTY;
+        }
+      }
+      else if (!this.mergeItemStack(itemstack1, 9, 45, false)) {
+        return ItemStack.EMPTY;
+      }
+      if (itemstack1.isEmpty()) {
+        slot.putStack(ItemStack.EMPTY);
+      }
+      else {
+        slot.onSlotChanged();
+      }
+      if (itemstack1.getCount() == itemstack.getCount()) {
+        return ItemStack.EMPTY;
+      }
+      ItemStack itemstack2 = slot.onTake(playerIn, itemstack1);
+      if (index == 0) {
+        playerIn.dropItem(itemstack2, false);
+      }
+    }
+    return itemstack;
   }
 }

@@ -1,6 +1,7 @@
 package com.lothrazar.invcrafting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import com.lothrazar.invcrafting.inventory.ContainerPlayerCrafting;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
@@ -28,7 +29,7 @@ public class Transfer implements IRecipeTransferInfo<ContainerPlayerCrafting> {
   @Override
   public List<Slot> getInventorySlots(ContainerPlayerCrafting container) {
     List<Slot> slots = new ArrayList<>();
-    for (int i = 10; i < container.inventorySlots.size(); i++) {
+    for (int i = 9; i <= 44; i++) {
       slots.add(container.getSlot(i));
     }
     return slots;
@@ -43,9 +44,17 @@ public class Transfer implements IRecipeTransferInfo<ContainerPlayerCrafting> {
   public List<Slot> getRecipeSlots(ContainerPlayerCrafting container) {
     //zero is the result, hence 1 thru 9 inclusive
     List<Slot> slots = new ArrayList<>();
-    for (int i = 1; i <= 9; i++) {
-      slots.add(container.getSlot(i));
-    }
+    slots.add(container.getSlot(50));
+    slots.add(container.getSlot(47));
+    slots.add(container.getSlot(48));
+    slots.add(container.getSlot(1));
+    slots.add(container.getSlot(2));
+    slots.add(container.getSlot(46));
+    slots.add(container.getSlot(3));
+    slots.add(container.getSlot(4));
+    slots.add(container.getSlot(49));
+    System.out.println("this?" + slots);
+    Collections.shuffle(slots);
     return slots;
   }
 }
