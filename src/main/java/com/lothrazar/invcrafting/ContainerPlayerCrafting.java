@@ -206,6 +206,6 @@ public class ContainerPlayerCrafting extends ContainerPlayer {
   }
 
   private void log(String string) {
-    //  System.out.println(string);
+      System.out.println(string);
   }
 }
