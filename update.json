@@ -1,18 +1,10 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/inventory-crafting-grid/",
   "promos": {
-    "1.12.2-latest": "1.0.0",
-    "1.12.2-recommended": "1.0.0",
-    "1.15.2-latest": "1.0.0",
-    "1.15.2-recommended": "1.0.0"
+    "1.16.1-latest": "1.0.0",
+    "1.16.1-recommended": "1.0.0"
   },
-  "1.12.2": {
-    "1.0.0": "Release "
-  },
-  "1.15.2": {
-    "1.0.0": "Release ",
-    "1.1.0": "Finished port, fix item loss issue, fix rendering issue. ",
-    "1.1.1": "Fixed crafting output slot ",
-    "1.1.2": "Fixed Shift-Click transfer behavior to match old inventory "
+  "1.16.1": {
+    "1.0.0": "Ported"
   }
 }
