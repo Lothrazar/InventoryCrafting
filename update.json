@@ -1,5 +1,5 @@
 {
-  "homepage": "http://www.curse.com/mc-mods/minecraft/232597-inventory-crafting-grid",
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/inventory-crafting-grid",
   "promos": {
     "1.7.10-latest": "1.0.0",
     "1.7.10-recommended": "1.0.0",
@@ -9,7 +9,7 @@
     "1.8.8-recommended": "1.0.3",
     "1.8.9-latest": "1.0.3",
     "1.8.9-recommended": "1.0.3",
-    "1.9-latest": "1.0.3",
-    "1.9-recommended": "1.0.3"
+    "1.10.2-latest": "1.0.0",
+    "1.10.2-recommended": "1.0.0"
   }
 }
