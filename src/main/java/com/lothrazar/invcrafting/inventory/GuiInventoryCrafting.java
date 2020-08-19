@@ -17,8 +17,8 @@ public class GuiInventoryCrafting extends InventoryScreen {
   }
 
   @Override //drawGuiContainerBackgroundLayer
-  protected void func_230450_a_(MatrixStack ms, float partialTicks, int mouseX, int mouseY) {
-    super.func_230450_a_(ms, partialTicks, mouseX, mouseY);
+  protected void drawGuiContainerBackgroundLayer(MatrixStack ms, float partialTicks, int mouseX, int mouseY) {
+    super.drawGuiContainerBackgroundLayer(ms, partialTicks, mouseX, mouseY);
     this.minecraft.getTextureManager().bindTexture(BACKGROUND);
     this.blit(ms, this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
     int i = this.guiLeft;
@@ -27,7 +27,7 @@ public class GuiInventoryCrafting extends InventoryScreen {
   }
 
   @Override
-  public void func_230451_b_(MatrixStack ms, int mouseX, int mouseY) {
+  public void drawGuiContainerForegroundLayer(MatrixStack ms, int mouseX, int mouseY) {
     // do not call super here to disable the title text rendering on screen
     //    super.drawGuiContainerForegroundLayer(mouseX, mouseY);
   }

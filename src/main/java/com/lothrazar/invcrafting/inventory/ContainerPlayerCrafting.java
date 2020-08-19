@@ -77,7 +77,7 @@ public class ContainerPlayerCrafting extends PlayerContainer {
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public Pair<ResourceLocation, ResourceLocation> func_225517_c_() {
+        public Pair<ResourceLocation, ResourceLocation> getBackground() {
           return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
         }
       });
@@ -111,7 +111,7 @@ public class ContainerPlayerCrafting extends PlayerContainer {
 
       @Override
       @OnlyIn(Dist.CLIENT)
-      public Pair<ResourceLocation, ResourceLocation> func_225517_c_() {
+      public Pair<ResourceLocation, ResourceLocation> getBackground() {
         return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, PlayerContainer.EMPTY_ARMOR_SLOT_SHIELD);
       }
     });
