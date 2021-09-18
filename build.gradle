@@ -1,36 +1,31 @@
 buildscript {
     repositories {
+	  maven { url = 'https://maven.minecraftforge.net' }   
         maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-import net.minecraftforge.gradle.common.task.SignJar
-import groovy.json.JsonSlurper
-import groovy.json.JsonOutput
+
+import net.minecraftforge.gradle.common.tasks.SignJar
 
 version = "${mc_version}-${mod_version}"
 group = 'com.lothrazar.invcrafting' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'invcrafting'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 minecraft {
-    // The mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   Snapshot are built nightly.
-    // stable_#            Stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.
-    
-    mappings channel: 'snapshot', version: mappings_version
+mappings channel: 'official', version: '1.17.1'
 
     //makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
@@ -96,8 +91,8 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    
-    compile fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+
+    implementation fg.deobf("mezz.jei:${jei_version}")
   //  compile fg.deobf("top.theillusivec4.curios:curios:FORGE-${mc_version}-${curios_version}")
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
@@ -125,19 +120,12 @@ repositories {
     name = "Progwml6 maven"
     url = "https://dvs1.progwml6.com/files/maven/"
   }
-  maven {
-    // location of a maven mirror for JEI files, as a fallback
-    name = "ModMaven"
-    url = "https://modmaven.k-4u.nl"
-  }    
-    maven {
-        url = "https://maven.theillusivec4.top/"
-    }
-    maven {
-        url 'http://maven.mcmoddev.com'
-    }
-    
+  maven { url = "https://modmaven.k-4u.nl"  }
+  maven { url = "https://maven.theillusivec4.top/"    }
+  maven { url 'https://maven.blamejared.com' }
+  maven { url 'https://www.cursemaven.com'  }
 }
+
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
@@ -156,21 +144,6 @@ jar {
 // Example configuration to allow publishing using the maven-publish task
 // This is the preferred method to reobfuscate your jar file
 jar.finalizedBy('reobfJar') 
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
-    }
-}
 
 task signJar(type: SignJar, dependsOn: jar) {
 
@@ -185,14 +158,14 @@ task signJar(type: SignJar, dependsOn: jar) {
     outputFile = jar.archivePath
 }
 
-build.dependsOn signJar
+//build.dependsOn signJar
 
 task copyJar(type: Copy) {
     from jar
     into "${dist_folder}"
 }
 
-build.finalizedBy copyJar
+//build.finalizedBy copyJar
 
 cleanJar {
   delete 'build/libs'

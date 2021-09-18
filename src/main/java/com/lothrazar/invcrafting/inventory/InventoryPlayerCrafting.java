@@ -1,11 +1,11 @@
 package com.lothrazar.invcrafting.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 
-public class InventoryPlayerCrafting extends PlayerInventory {
+public class InventoryPlayerCrafting extends Inventory {
 
-  public InventoryPlayerCrafting(PlayerEntity playerIn) {
+  public InventoryPlayerCrafting(Player playerIn) {
     super(playerIn);
   }
 }

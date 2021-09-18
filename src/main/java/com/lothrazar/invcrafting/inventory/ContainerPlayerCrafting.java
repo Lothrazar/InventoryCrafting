@@ -5,38 +5,38 @@ import java.util.Optional;
 import com.google.common.collect.Lists;
 import com.lothrazar.invcrafting.ModInvCrafting;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.CraftResultInventory;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.CraftingResultSlot;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.play.server.SSetSlotPacket;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ResultSlot;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-public class ContainerPlayerCrafting extends PlayerContainer {
+public class ContainerPlayerCrafting extends InventoryMenu {
 
   private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] { EMPTY_ARMOR_SLOT_BOOTS, EMPTY_ARMOR_SLOT_LEGGINGS, EMPTY_ARMOR_SLOT_CHESTPLATE, EMPTY_ARMOR_SLOT_HELMET };
-  private static final EquipmentSlotType[] ARMOR = new EquipmentSlotType[] { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
+  private static final EquipmentSlot[] ARMOR = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
   private int craftSize = 3;//did not exist before, was magic'd as 2 everywhere
-  private CraftingInventory craftMatrix;//field_75181_e 
-  private CraftResultInventory craftResult_;
-  private final PlayerEntity player;
+  private CraftingContainer craftMatrix;//craftSlots 
+  private ResultContainer craftResult_;
+  private final Player player;
 
-  public ContainerPlayerCrafting(InventoryPlayerCrafting playerInventory, boolean localWorld, PlayerEntity player) {
+  public ContainerPlayerCrafting(InventoryPlayerCrafting playerInventory, boolean localWorld, Player player) {
     super(playerInventory, localWorld, player);
     this.player = player;
     //
@@ -53,32 +53,32 @@ public class ContainerPlayerCrafting extends PlayerContainer {
       }
     }
     for (int k = 0; k < 4; ++k) {
-      final EquipmentSlotType equipmentslottype = ARMOR[k];
+      final EquipmentSlot equipmentslottype = ARMOR[k];
       slot = 36 + (3 - k);
       x = 8;
       y = 8 + k * 18;
       this.addSlot(new Slot(playerInventory, slot, x, y) {
 
         @Override
-        public int getSlotStackLimit() {
+        public int getMaxStackSize() {
           return 1;
         }
 
         @Override
-        public boolean canTakeStack(PlayerEntity playerIn) {
-          ItemStack itemstack = this.getStack();
-          return !itemstack.isEmpty() && !playerIn.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack) ? false : super.canTakeStack(playerIn);
+        public boolean mayPickup(Player playerIn) {
+          ItemStack itemstack = this.getItem();
+          return !itemstack.isEmpty() && !playerIn.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack) ? false : super.mayPickup(playerIn);
         }
 
         @Override
-        public boolean isItemValid(ItemStack stack) {
+        public boolean mayPlace(ItemStack stack) {
           return stack.canEquip(equipmentslottype, player);
         }
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public Pair<ResourceLocation, ResourceLocation> getBackground() {
-          return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
+        public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+          return Pair.of(InventoryMenu.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
         }
       });
     }
@@ -105,31 +105,31 @@ public class ContainerPlayerCrafting extends PlayerContainer {
        * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
        */
       @Override
-      public boolean isItemValid(ItemStack stack) {
-        return super.isItemValid(stack);
+      public boolean mayPlace(ItemStack stack) {
+        return super.mayPlace(stack);
       }
 
       @Override
       @OnlyIn(Dist.CLIENT)
-      public Pair<ResourceLocation, ResourceLocation> getBackground() {
-        return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, PlayerContainer.EMPTY_ARMOR_SLOT_SHIELD);
+      public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+        return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
       }
     });
-    this.onCraftMatrixChanged(this.craftMatrix);
+    this.slotsChanged(this.craftMatrix);
   }
 
   private void initCraftingGrid(InventoryPlayerCrafting playerInventory) {
     try {
-      Field m = ObfuscationReflectionHelper.findField(PlayerContainer.class, "field_75181_e");//"craftMatrix"
+      Field m = ObfuscationReflectionHelper.findField(InventoryMenu.class, "craftSlots");//"craftMatrix"
       m.setAccessible(true);
-      m.set(this, new CraftingInventory(this, craftSize, craftSize));
-      this.craftMatrix = (CraftingInventory) m.get(this);
-      //craftResult == field_75160_f
-      Field mResult = ObfuscationReflectionHelper.findField(PlayerContainer.class, "field_75179_f");//"craftResult"
+      m.set(this, new CraftingContainer(this, craftSize, craftSize));
+      this.craftMatrix = (CraftingContainer) m.get(this);
+      //craftResult == resultSlots
+      Field mResult = ObfuscationReflectionHelper.findField(InventoryMenu.class, "resultSlots");//"craftResult"
       mResult.setAccessible(true);
-      craftResult_ = (CraftResultInventory) mResult.get(this);
-      //field_75181_e is the 3x3 
-      this.addSlot(new CraftingResultSlot(playerInventory.player, craftMatrix, craftResult_, 0, 154, 24));
+      craftResult_ = (ResultContainer) mResult.get(this);
+      //craftSlots is the 3x3 
+      this.addSlot(new ResultSlot(playerInventory.player, craftMatrix, craftResult_, 0, 154, 24));
     }
     catch (Exception e) {
       ModInvCrafting.LOGGER.error(" Slots error", e);
@@ -138,7 +138,7 @@ public class ContainerPlayerCrafting extends PlayerContainer {
 
   private void initInventorySlots() {
     try {
-      Field m = ObfuscationReflectionHelper.findField(Container.class, "field_75151_b");// "inventorySlots");
+      Field m = ObfuscationReflectionHelper.findField(AbstractContainerMenu.class, "slots");// "inventorySlots");
       m.setAccessible(true);
       m.set(this, Lists.newArrayList());
     }
@@ -148,28 +148,28 @@ public class ContainerPlayerCrafting extends PlayerContainer {
   }
 
   @Override
-  public void onCraftMatrixChanged(IInventory inventoryIn) {
+  public void slotsChanged(Container inventoryIn) {
     try {
-      func_217066_a(this.windowId, this.player.world, this.player, this.craftMatrix, this.craftResult_);
+      slotChangedCraftingGrid(this.containerId, this.player.level, this.player, this.craftMatrix, this.craftResult_);
     }
     catch (Exception e) {
       ModInvCrafting.LOGGER.error("crafting error", e);
     }
   }
 
-  protected static void func_217066_a(int p_217066_0_, World p_217066_1_, PlayerEntity p_217066_2_, CraftingInventory p_217066_3_, CraftResultInventory p_217066_4_) {
-    if (!p_217066_1_.isRemote) {
-      ServerPlayerEntity serverplayerentity = (ServerPlayerEntity) p_217066_2_;
+  protected static void slotChangedCraftingGrid(int p_217066_0_, Level p_217066_1_, Player p_217066_2_, CraftingContainer p_217066_3_, ResultContainer p_217066_4_) {
+    if (!p_217066_1_.isClientSide) {
+      ServerPlayer serverplayerentity = (ServerPlayer) p_217066_2_;
       ItemStack itemstack = ItemStack.EMPTY;
-      Optional<ICraftingRecipe> optional = p_217066_1_.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, p_217066_3_, p_217066_1_);
+      Optional<CraftingRecipe> optional = p_217066_1_.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, p_217066_3_, p_217066_1_);
       if (optional.isPresent()) {
-        ICraftingRecipe icraftingrecipe = optional.get();
-        if (p_217066_4_.canUseRecipe(p_217066_1_, serverplayerentity, icraftingrecipe)) {
-          itemstack = icraftingrecipe.getCraftingResult(p_217066_3_);
+        CraftingRecipe icraftingrecipe = optional.get();
+        if (p_217066_4_.setRecipeUsed(p_217066_1_, serverplayerentity, icraftingrecipe)) {
+          itemstack = icraftingrecipe.assemble(p_217066_3_);
         }
       }
-      p_217066_4_.setInventorySlotContents(0, itemstack);
-      serverplayerentity.connection.sendPacket(new SSetSlotPacket(p_217066_0_, 0, itemstack));
+      p_217066_4_.setItem(0, itemstack);
+      serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(p_217066_0_, 0, itemstack));
     }
   }
 
@@ -177,9 +177,9 @@ public class ContainerPlayerCrafting extends PlayerContainer {
    * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player inventory and the other inventory(s).
    */
   @Override
-  public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+  public ItemStack quickMoveStack(Player playerIn, int index) {
     ItemStack itemstack = ItemStack.EMPTY;
-    log("Transfer " + index + " ..sheild " + this.inventorySlots.get(50).getStack());
+    log("Transfer " + index + " ..sheild " + this.slots.get(50).getItem());
     int TOPLEFT = 14;
     int BOTRIGHT = 40;
     int HOTBARSTART = 41;
@@ -190,71 +190,71 @@ public class ContainerPlayerCrafting extends PlayerContainer {
     int ARMORSTART = 10;
     int ARMOREND = 13;
     int SHIELD = 50;
-    Slot slot = this.inventorySlots.get(index);
-    if (slot != null && slot.getHasStack()) {
-      ItemStack itemstack1 = slot.getStack();
+    Slot slot = this.slots.get(index);
+    if (slot != null && slot.hasItem()) {
+      ItemStack itemstack1 = slot.getItem();
       itemstack = itemstack1.copy();
-      EquipmentSlotType equipmentslottype = MobEntity.getSlotForItemStack(itemstack);
+      EquipmentSlot equipmentslottype = Mob.getEquipmentSlotForItem(itemstack);
       if (index == 0 || index == SHIELD) {
         //craft output
-        if (!this.mergeItemStack(itemstack1, TOPLEFT, HOTBAREND + 1, false)) {
+        if (!this.moveItemStackTo(itemstack1, TOPLEFT, HOTBAREND + 1, false)) {
           return ItemStack.EMPTY;
         }
-        slot.onSlotChange(itemstack1, itemstack);
+        slot.onQuickCraft(itemstack1, itemstack);
       }
       else if (index >= ARMORSTART && index <= ARMOREND) {
         // from armor 
-        if (!this.mergeItemStack(itemstack1, TOPLEFT, HOTBAREND + 1, false)) {
+        if (!this.moveItemStackTo(itemstack1, TOPLEFT, HOTBAREND + 1, false)) {
           return ItemStack.EMPTY;
         }
       }
       else if (index >= CRAFTSTART && index <= CRAFTEND) {
         // from crafting grid
-        if (!this.mergeItemStack(itemstack1, TOPLEFT, HOTBAREND + 1, false)) {
+        if (!this.moveItemStackTo(itemstack1, TOPLEFT, HOTBAREND + 1, false)) {
           return ItemStack.EMPTY;
         }
       }
-      else if (equipmentslottype.getSlotType() == EquipmentSlotType.Group.ARMOR && !this.inventorySlots.get(8 - equipmentslottype.getIndex()).getHasStack()) {
+      else if (equipmentslottype.getType() == EquipmentSlot.Type.ARMOR && !this.slots.get(8 - equipmentslottype.getIndex()).hasItem()) {
         //going to armor slots 
         int i = ARMORSTART - equipmentslottype.getIndex() + 3;
-        if (!this.mergeItemStack(itemstack1, i, i + 1, false)) {
+        if (!this.moveItemStackTo(itemstack1, i, i + 1, false)) {
           return ItemStack.EMPTY;
         }
       }
-      else if (equipmentslottype == EquipmentSlotType.OFFHAND && !this.inventorySlots.get(SHIELD).getHasStack()) {
+      else if (equipmentslottype == EquipmentSlot.OFFHAND && !this.slots.get(SHIELD).hasItem()) {
         // to shield slot
-        if (!this.mergeItemStack(itemstack1, SHIELD, SHIELD + 1, false)) {
+        if (!this.moveItemStackTo(itemstack1, SHIELD, SHIELD + 1, false)) {
           return ItemStack.EMPTY;
         }
       }
       else if (index >= TOPLEFT && index <= BOTRIGHT) {
         //from inventory to hotbar
-        if (!this.mergeItemStack(itemstack1, HOTBARSTART, HOTBAREND + 1, false)) {
+        if (!this.moveItemStackTo(itemstack1, HOTBARSTART, HOTBAREND + 1, false)) {
           return ItemStack.EMPTY;
         }
       }
       else if (index >= HOTBARSTART && index <= HOTBAREND) {
         //from hotbar to inventory
-        if (!this.mergeItemStack(itemstack1, TOPLEFT, BOTRIGHT + 1, false)) {
+        if (!this.moveItemStackTo(itemstack1, TOPLEFT, BOTRIGHT + 1, false)) {
           return ItemStack.EMPTY;
         }
       }
-      else if (!this.mergeItemStack(itemstack1, HOTBARSTART, BOTRIGHT + 1, false)) {
+      else if (!this.moveItemStackTo(itemstack1, HOTBARSTART, BOTRIGHT + 1, false)) {
         //catch-all for inv + hotbar
         return ItemStack.EMPTY;
       }
       if (itemstack1.isEmpty()) {
-        slot.putStack(ItemStack.EMPTY);
+        slot.set(ItemStack.EMPTY);
       }
       else {
-        slot.onSlotChanged();
+        slot.setChanged();
       }
       if (itemstack1.getCount() == itemstack.getCount()) {
         return ItemStack.EMPTY;
       }
       ItemStack itemstack2 = slot.onTake(playerIn, itemstack1);
       if (index == 0) {
-        playerIn.dropItem(itemstack2, false);
+        playerIn.drop(itemstack2, false);
       }
     }
     return itemstack;

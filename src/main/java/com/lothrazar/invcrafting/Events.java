@@ -5,9 +5,9 @@ import com.lothrazar.invcrafting.inventory.ContainerPlayerCrafting;
 import com.lothrazar.invcrafting.inventory.GuiInventoryCrafting;
 import com.lothrazar.invcrafting.inventory.InventoryPlayerCrafting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -32,26 +32,26 @@ public class Events {
 
   @SubscribeEvent
   public void onEntityJoinWorld(EntityJoinWorldEvent event) {
-    if (event.getEntity() instanceof PlayerEntity) {
-      PlayerEntity player = (PlayerEntity) event.getEntity();
+    if (event.getEntity() instanceof Player) {
+      Player player = (Player) event.getEntity();
       if (player.inventory instanceof InventoryPlayerCrafting == false) {
         //set not final
         //
         try {
-          Field inventoryField = ObfuscationReflectionHelper.findField(PlayerEntity.class, "field_71071_by");
+          Field inventoryField = ObfuscationReflectionHelper.findField(Player.class, "inventory");
           inventoryField.setAccessible(true);
           //basically saetting this  
           InventoryPlayerCrafting invCrafting = new InventoryPlayerCrafting(player);
-          for (int i = 0; i < invCrafting.armorInventory.size(); i++) {
-            invCrafting.armorInventory.set(i, player.inventory.armorInventory.get(i));
+          for (int i = 0; i < invCrafting.armor.size(); i++) {
+            invCrafting.armor.set(i, player.inventory.armor.get(i));
           }
-          for (int i = 0; i < invCrafting.mainInventory.size(); i++) {
-            invCrafting.mainInventory.set(i, player.inventory.mainInventory.get(i));
+          for (int i = 0; i < invCrafting.items.size(); i++) {
+            invCrafting.items.set(i, player.inventory.items.get(i));
           }
-          for (int i = 0; i < invCrafting.offHandInventory.size(); i++) {
-            invCrafting.offHandInventory.set(i, player.inventory.offHandInventory.get(i));
+          for (int i = 0; i < invCrafting.offhand.size(); i++) {
+            invCrafting.offhand.set(i, player.inventory.offhand.get(i));
           }
-          invCrafting.currentItem = player.inventory.currentItem;
+          invCrafting.selected = player.inventory.selected;
           inventoryField.set(player, invCrafting);
         }
         catch (Exception e) {
@@ -60,16 +60,16 @@ public class Events {
         //now for container
         //
         try {
-          Field m = ObfuscationReflectionHelper.findField(PlayerEntity.class, "field_71069_bz");// "inventory");
+          Field m = ObfuscationReflectionHelper.findField(Player.class, "inventoryMenu");// "inventory");
           m.setAccessible(true);
           //basically saetting this  
-          m.set(player, new ContainerPlayerCrafting((InventoryPlayerCrafting) player.inventory, !player.world.isRemote, player));
+          m.set(player, new ContainerPlayerCrafting((InventoryPlayerCrafting) player.inventory, !player.level.isClientSide, player));
         }
         catch (Exception e) {
           ModInvCrafting.LOGGER.error("Events set container error", e);
         }
         //        player.container = new ContainerPlayerCrafting((InventoryPlayerCrafting) player.inventory, !player.world.isRemote, player);
-        player.openContainer = player.container;
+        player.containerMenu = player.inventoryMenu;
       }
     }
   }

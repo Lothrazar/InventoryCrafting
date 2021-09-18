@@ -5,8 +5,8 @@ import java.util.List;
 import com.lothrazar.invcrafting.inventory.ContainerPlayerCrafting;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.resources.ResourceLocation;
 
 public class Transfer implements IRecipeTransferInfo<ContainerPlayerCrafting> {
 
@@ -28,7 +28,7 @@ public class Transfer implements IRecipeTransferInfo<ContainerPlayerCrafting> {
   @Override
   public List<Slot> getInventorySlots(ContainerPlayerCrafting container) {
     List<Slot> slots = new ArrayList<>();
-    for (int i = 10; i < container.inventorySlots.size(); i++) {
+    for (int i = 10; i < container.slots.size(); i++) {
       slots.add(container.getSlot(i));
     }
     return slots;
