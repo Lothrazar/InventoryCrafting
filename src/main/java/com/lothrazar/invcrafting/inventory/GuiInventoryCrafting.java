@@ -11,18 +11,17 @@ import net.minecraft.resources.ResourceLocation;
 public class GuiInventoryCrafting extends InventoryScreen {
 
   private static final ResourceLocation BACKGROUND = new ResourceLocation(ModInvCrafting.MODID, "textures/gui/inventorycraft.png");
-  ContainerPlayerCrafting container;
+  private ContainerPlayerCrafting container;
 
   public GuiInventoryCrafting(Player p) {
     super(p);
     this.container = ((p.containerMenu instanceof ContainerPlayerCrafting) ? (ContainerPlayerCrafting) p.containerMenu : null);
   }
 
-  @Override //drawGuiContainerBackgroundLayer
+  @Override
   protected void renderBg(PoseStack ms, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(ms, partialTicks, mouseX, mouseY);
-//    this.minecraft.getTextureManager().bind(BACKGROUND);
     RenderSystem.setShader(GameRenderer::getPositionTexShader);
+    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     RenderSystem.setShaderTexture(0, BACKGROUND);
     this.blit(ms, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
     int i = this.leftPos;
@@ -33,6 +32,5 @@ public class GuiInventoryCrafting extends InventoryScreen {
   @Override
   public void renderLabels(PoseStack ms, int mouseX, int mouseY) {
     // do not call super here to disable the title text rendering on screen
-    //    super.drawGuiContainerForegroundLayer(mouseX, mouseY);
   }
 }

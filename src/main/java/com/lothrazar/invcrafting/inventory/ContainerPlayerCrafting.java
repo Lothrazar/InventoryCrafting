@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.google.common.collect.Lists;
 import com.lothrazar.invcrafting.ModInvCrafting;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -31,8 +32,8 @@ public class ContainerPlayerCrafting extends InventoryMenu {
 
   private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] { EMPTY_ARMOR_SLOT_BOOTS, EMPTY_ARMOR_SLOT_LEGGINGS, EMPTY_ARMOR_SLOT_CHESTPLATE, EMPTY_ARMOR_SLOT_HELMET };
   private static final EquipmentSlot[] ARMOR = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
-  private int craftSize = 3;//did not exist before, was magic'd as 2 everywhere
-  private CraftingContainer craftMatrix;//craftSlots 
+  private int craftSize = 3; //did not exist before, was magic'd as 2 everywhere
+  private CraftingContainer craftMatrix; //craftSlots
   private ResultContainer craftResult_;
   private final Player player;
 
@@ -131,7 +132,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
       this.addSlot(new ResultSlot(playerInventory.player, craftMatrix, craftResult_, 0, 154, 24));
     }
     catch (Exception e) {
-      ModInvCrafting.LOGGER.error(" Slots error", e);
+      ModInvCrafting.LOGGER.error(" initCraftingGrid error", e);
     }
   }
 
@@ -139,10 +140,10 @@ public class ContainerPlayerCrafting extends InventoryMenu {
     try {
       Field m = ObfuscationReflectionHelper.findField(AbstractContainerMenu.class, "slots");// "inventorySlots");
       m.setAccessible(true);
-      m.set(this, Lists.newArrayList());
+      m.set(this, NonNullList.create());
     }
     catch (Exception e) {
-      ModInvCrafting.LOGGER.error(" Slots error", e);
+      ModInvCrafting.LOGGER.error(" initInventorySlots error", e);
     }
   }
 
@@ -260,6 +261,5 @@ public class ContainerPlayerCrafting extends InventoryMenu {
   }
 
   private void log(String string) {
-    //  System.out.println(string);
   }
 }

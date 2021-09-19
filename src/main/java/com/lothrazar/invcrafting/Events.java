@@ -60,7 +60,7 @@ public class Events {
         //now for container
         //
         try {
-          Field m = ObfuscationReflectionHelper.findField(Player.class, "inventoryMenu");// "inventory");
+          Field m = ObfuscationReflectionHelper.findField(Player.class, "inventoryMenu");
           m.setAccessible(true);
           //basically saetting this  
           m.set(player, new ContainerPlayerCrafting((InventoryPlayerCrafting) player.getInventory(), !player.level.isClientSide, player));
