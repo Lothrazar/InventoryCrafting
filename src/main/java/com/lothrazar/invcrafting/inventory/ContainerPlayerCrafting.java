@@ -1,28 +1,27 @@
 package com.lothrazar.invcrafting.inventory;
 
-import java.lang.reflect.Field;
-import java.util.Optional;
-import com.google.common.collect.Lists;
 import com.lothrazar.invcrafting.ModInvCrafting;
 import com.mojang.datafixers.util.Pair;
+import java.lang.reflect.Field;
+import java.util.Optional;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.ResultContainer;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ResultSlot;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,11 +29,21 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class ContainerPlayerCrafting extends InventoryMenu {
 
+  private static final int TOPLEFT = 14;
+  private static final int BOTRIGHT = 40;
+  private static final int HOTBARSTART = 41;
+  private static final int HOTBAREND = 49;
+  private static final int CRAFTSTART = 1;
+  private static final int CRAFTEND = 9;
+  //armor is 10-13
+  private static final int ARMORSTART = 10;
+  private static final int ARMOREND = 13;
+  private static final int SHIELD = 50;
   private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] { EMPTY_ARMOR_SLOT_BOOTS, EMPTY_ARMOR_SLOT_LEGGINGS, EMPTY_ARMOR_SLOT_CHESTPLATE, EMPTY_ARMOR_SLOT_HELMET };
   private static final EquipmentSlot[] ARMOR = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
   private int craftSize = 3; //did not exist before, was magic'd as 2 everywhere
   private CraftingContainer craftMatrix; //craftSlots
-  private ResultContainer craftResult_;
+  private ResultContainer craftResult;
   private final Player player;
 
   public ContainerPlayerCrafting(InventoryPlayerCrafting playerInventory, boolean localWorld, Player player) {
@@ -121,15 +130,15 @@ public class ContainerPlayerCrafting extends InventoryMenu {
 
   private void initCraftingGrid(InventoryPlayerCrafting playerInventory) {
     try {
-      Field m = ObfuscationReflectionHelper.findField(InventoryMenu.class, "craftSlots");//"craftMatrix"
+      Field m = ObfuscationReflectionHelper.findField(InventoryMenu.class, "craftSlots");
       m.setAccessible(true);
       m.set(this, new CraftingContainer(this, craftSize, craftSize));
       this.craftMatrix = (CraftingContainer) m.get(this);
-      Field mResult = ObfuscationReflectionHelper.findField(InventoryMenu.class, "resultSlots");//"craftResult"
+      Field mResult = ObfuscationReflectionHelper.findField(InventoryMenu.class, "resultSlots");
       mResult.setAccessible(true);
-      craftResult_ = (ResultContainer) mResult.get(this);
+      craftResult = (ResultContainer) mResult.get(this);
       //craftSlots is the 3x3 
-      this.addSlot(new ResultSlot(playerInventory.player, craftMatrix, craftResult_, 0, 154, 24));
+      this.addSlot(new ResultSlot(playerInventory.player, craftMatrix, craftResult, 0, 154, 24));
     }
     catch (Exception e) {
       ModInvCrafting.LOGGER.error(" initCraftingGrid error", e);
@@ -138,7 +147,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
 
   private void initInventorySlots() {
     try {
-      Field m = ObfuscationReflectionHelper.findField(AbstractContainerMenu.class, "slots");// "inventorySlots");
+      Field m = ObfuscationReflectionHelper.findField(AbstractContainerMenu.class, "slots");
       m.setAccessible(true);
       m.set(this, NonNullList.create());
     }
@@ -148,9 +157,18 @@ public class ContainerPlayerCrafting extends InventoryMenu {
   }
 
   @Override
+  public Slot getSlot(int p) {
+    // functionality is fine without this but spams 'Index 51 out of bounds for length 51' errors without . bandaid fix
+    if (p >= this.slots.size()) {
+      return null;
+    }
+    return super.getSlot(p);
+  }
+
+  @Override
   public void slotsChanged(Container inventoryIn) {
     try {
-      slotChangedCraftingGrid(this.containerId, this.player.level, this.player, this.craftMatrix, this.craftResult_);
+      slotChangedCraftingGrid(this.containerId, this.player.level, this.player, this.craftMatrix, this.craftResult);
     }
     catch (Exception e) {
       ModInvCrafting.LOGGER.error("crafting error", e);
@@ -169,7 +187,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
         }
       }
       resultContainer.setItem(0, itemstack);
-      serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(containerId, 0,0, itemstack));
+      serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(containerId, 0, 0, itemstack));
     }
   }
 
@@ -179,19 +197,9 @@ public class ContainerPlayerCrafting extends InventoryMenu {
   @Override
   public ItemStack quickMoveStack(Player playerIn, int index) {
     ItemStack itemstack = ItemStack.EMPTY;
-    log("Transfer " + index + " ..sheild " + this.slots.get(50).getItem());
-    int TOPLEFT = 14;
-    int BOTRIGHT = 40;
-    int HOTBARSTART = 41;
-    int HOTBAREND = 49;
-    int CRAFTSTART = 1;
-    int CRAFTEND = 9;
-    //armor is 10-13
-    int ARMORSTART = 10;
-    int ARMOREND = 13;
-    int SHIELD = 50;
-    Slot slot = this.slots.get(index);
-    if (slot != null && slot.hasItem()) {
+    log("Transfer " + index + " ..sheild " + this.getSlot(SHIELD).getItem());
+    Slot slot = this.getSlot(index);
+    if (slot.hasItem()) {
       ItemStack itemstack1 = slot.getItem();
       itemstack = itemstack1.copy();
       EquipmentSlot equipmentslottype = Mob.getEquipmentSlotForItem(itemstack);
@@ -214,14 +222,14 @@ public class ContainerPlayerCrafting extends InventoryMenu {
           return ItemStack.EMPTY;
         }
       }
-      else if (equipmentslottype.getType() == EquipmentSlot.Type.ARMOR && !this.slots.get(8 - equipmentslottype.getIndex()).hasItem()) {
+      else if (equipmentslottype.getType() == EquipmentSlot.Type.ARMOR && !this.getSlot(8 - equipmentslottype.getIndex()).hasItem()) {
         //going to armor slots 
         int i = ARMORSTART - equipmentslottype.getIndex() + 3;
         if (!this.moveItemStackTo(itemstack1, i, i + 1, false)) {
           return ItemStack.EMPTY;
         }
       }
-      else if (equipmentslottype == EquipmentSlot.OFFHAND && !this.slots.get(SHIELD).hasItem()) {
+      else if (equipmentslottype == EquipmentSlot.OFFHAND && !this.getSlot(SHIELD).hasItem()) {
         // to shield slot
         if (!this.moveItemStackTo(itemstack1, SHIELD, SHIELD + 1, false)) {
           return ItemStack.EMPTY;
