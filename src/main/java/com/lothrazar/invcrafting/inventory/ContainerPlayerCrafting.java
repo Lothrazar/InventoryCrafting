@@ -2,7 +2,6 @@ package com.lothrazar.invcrafting.inventory;
 
 import com.lothrazar.invcrafting.ModInvCrafting;
 import com.mojang.datafixers.util.Pair;
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.NonNullList;
@@ -13,7 +12,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.ResultContainer;
@@ -26,7 +24,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class ContainerPlayerCrafting extends InventoryMenu {
 
@@ -42,9 +39,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
   private static final int SHIELD = 50;
   private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] { EMPTY_ARMOR_SLOT_BOOTS, EMPTY_ARMOR_SLOT_LEGGINGS, EMPTY_ARMOR_SLOT_CHESTPLATE, EMPTY_ARMOR_SLOT_HELMET };
   private static final EquipmentSlot[] ARMOR = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
-  private int craftSize = 3; //did not exist before, was magic'd as 2 everywhere
-  private CraftingContainer craftMatrix; //craftSlots
-  private ResultContainer craftResult;
+  private final int craftSize = 3; //did not exist before, was magic'd as 2 everywhere
   private final Player player;
 
   public ContainerPlayerCrafting(InventoryPlayerCrafting playerInventory, boolean localWorld, Player player) {
@@ -60,7 +55,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
         x = 82 + j * 18;
         y = 8 + i * 18;
         slot = j + i * craftSize;
-        this.addSlot(new Slot(this.craftMatrix, slot, x, y));
+        this.addSlot(new Slot(this.craftSlots, slot, x, y));
       }
     }
     for (int k = 0; k < 4; ++k) {
@@ -126,35 +121,63 @@ public class ContainerPlayerCrafting extends InventoryMenu {
         return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
       }
     });
-    this.slotsChanged(this.craftMatrix);
+    this.slotsChanged(this.craftSlots);
   }
 
   private void initCraftingGrid(InventoryPlayerCrafting playerInventory) {
     try {
-      Field m = ObfuscationReflectionHelper.findField(InventoryMenu.class, "craftSlots");
-      m.setAccessible(true);
-      m.set(this, new CraftingContainer(this, craftSize, craftSize));
-      this.craftMatrix = (CraftingContainer) m.get(this);
-      Field mResult = ObfuscationReflectionHelper.findField(InventoryMenu.class, "resultSlots");
-      mResult.setAccessible(true);
-      craftResult = (ResultContainer) mResult.get(this);
+      this.craftSlots = new CraftingContainer(this, craftSize, craftSize);
+      //      Field m = ObfuscationReflectionHelper.findField(InventoryMenu.class, "f_39701_"); // craftSlots
+      //      m.setAccessible(true);
+      //      m.set(this, new CraftingContainer(this, craftSize, craftSize));
+      //      this.craftMatrix = (CraftingContainer) m.get(this);
+      //
+      //      Field mResult = ObfuscationReflectionHelper.findField(InventoryMenu.class, "f_39702_"); // resultSlots
+      //      mResult.setAccessible(true);
+      //      craftResult = (ResultContainer) mResult.get(this);
       //craftSlots is the 3x3 
-      this.addSlot(new ResultSlot(playerInventory.player, craftMatrix, craftResult, 0, 154, 24));
+      this.addSlot(new ResultSlot(playerInventory.player, craftSlots, resultSlots, 0, 154, 24));
     }
     catch (Exception e) {
       ModInvCrafting.LOGGER.error(" initCraftingGrid error", e);
     }
   }
 
+  //  net/minecraft/world/inventory/AbstractContainerMenu net/minecraft/world/inventory/AbstractContainerMenu
+  //  CARRIED_SLOT_SIZE f_150392_
+  //  QUICKCRAFT_HEADER_CONTINUE f_150390_
+  //  QUICKCRAFT_HEADER_END f_150391_
+  //  QUICKCRAFT_HEADER_START f_150389_
+  //  QUICKCRAFT_TYPE_CHARITABLE f_150386_
+  //  QUICKCRAFT_TYPE_CLONE f_150388_
+  //  QUICKCRAFT_TYPE_GREEDY f_150387_
+  //  SLOT_CLICKED_OUTSIDE f_150385_
+  //  carried f_150393_
+  //  containerId f_38840_
+  //  containerListeners f_38848_
+  //  dataSlots f_38842_
+  //  lastSlots f_38841_
+  //  menuType f_38843_
+  //  quickcraftSlots f_38847_
+  //  quickcraftStatus f_38846_
+  //  quickcraftType f_38845_
+  //  remoteCarried f_150396_
+  //  remoteDataSlots f_150395_
+  //  remoteSlots f_150394_
+  //  slots f_38839_
+  //  stateId f_182405_
+  //  suppressRemoteUpdates f_150398_
+  //  synchronizer f_150397_
   private void initInventorySlots() {
-    try {
-      Field m = ObfuscationReflectionHelper.findField(AbstractContainerMenu.class, "slots");
-      m.setAccessible(true);
-      m.set(this, NonNullList.create());
-    }
-    catch (Exception e) {
-      ModInvCrafting.LOGGER.error(" initInventorySlots error", e);
-    }
+    this.slots = NonNullList.create();
+    //    try {
+    //      Field m = ObfuscationReflectionHelper.findField(AbstractContainerMenu.class, "f_38839_"); // slots
+    //      m.setAccessible(true);
+    //      m.set(this, NonNullList.create());
+    //    }
+    //    catch (Exception e) {
+    //      ModInvCrafting.LOGGER.error(" initInventorySlots error", e);
+    //    }
   }
 
   public void initializeContents(int s, List<ItemStack> stacks, ItemStack stack) {
@@ -178,7 +201,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
   @Override
   public void slotsChanged(Container inventoryIn) {
     try {
-      slotChangedCraftingGrid(this.containerId, this.player.level, this.player, this.craftMatrix, this.craftResult);
+      slotChangedCraftingGrid(this.containerId, this.player.level, this.player, this.craftSlots, this.resultSlots);
     }
     catch (Exception e) {
       ModInvCrafting.LOGGER.error("crafting error", e);
@@ -207,7 +230,6 @@ public class ContainerPlayerCrafting extends InventoryMenu {
   @Override
   public ItemStack quickMoveStack(Player playerIn, int index) {
     ItemStack itemstack = ItemStack.EMPTY;
-    log("Transfer " + index + " ..sheild " + this.getSlot(SHIELD).getItem());
     Slot slot = this.getSlot(index);
     if (slot.hasItem()) {
       ItemStack itemstack1 = slot.getItem();
@@ -276,8 +298,5 @@ public class ContainerPlayerCrafting extends InventoryMenu {
       }
     }
     return itemstack;
-  }
-
-  private void log(String string) {
   }
 }
