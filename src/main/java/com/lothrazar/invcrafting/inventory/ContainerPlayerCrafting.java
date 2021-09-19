@@ -3,6 +3,7 @@ package com.lothrazar.invcrafting.inventory;
 import com.lothrazar.invcrafting.ModInvCrafting;
 import com.mojang.datafixers.util.Pair;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
@@ -153,6 +154,15 @@ public class ContainerPlayerCrafting extends InventoryMenu {
     }
     catch (Exception e) {
       ModInvCrafting.LOGGER.error(" initInventorySlots error", e);
+    }
+  }
+
+  public void initializeContents(int s, List<ItemStack> stacks, ItemStack stack) {
+    try {
+      super.initializeContents(s, stacks, stack);
+    }
+    catch (Exception e) {
+      //shhhh it fixes itself
     }
   }
 
