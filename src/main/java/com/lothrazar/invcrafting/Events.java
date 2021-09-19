@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class Events {
 
@@ -34,7 +34,7 @@ public class Events {
   public void onEntityJoinWorld(EntityJoinWorldEvent event) {
     if (event.getEntity() instanceof Player) {
       Player player = (Player) event.getEntity();
-      if (player.inventory instanceof InventoryPlayerCrafting == false) {
+      if (player.getInventory() instanceof InventoryPlayerCrafting == false) {
         //set not final
         //
         try {
@@ -43,15 +43,15 @@ public class Events {
           //basically saetting this  
           InventoryPlayerCrafting invCrafting = new InventoryPlayerCrafting(player);
           for (int i = 0; i < invCrafting.armor.size(); i++) {
-            invCrafting.armor.set(i, player.inventory.armor.get(i));
+            invCrafting.armor.set(i, player.getInventory().armor.get(i));
           }
           for (int i = 0; i < invCrafting.items.size(); i++) {
-            invCrafting.items.set(i, player.inventory.items.get(i));
+            invCrafting.items.set(i, player.getInventory().items.get(i));
           }
           for (int i = 0; i < invCrafting.offhand.size(); i++) {
-            invCrafting.offhand.set(i, player.inventory.offhand.get(i));
+            invCrafting.offhand.set(i, player.getInventory().offhand.get(i));
           }
-          invCrafting.selected = player.inventory.selected;
+          invCrafting.selected = player.getInventory().selected;
           inventoryField.set(player, invCrafting);
         }
         catch (Exception e) {
@@ -63,7 +63,7 @@ public class Events {
           Field m = ObfuscationReflectionHelper.findField(Player.class, "inventoryMenu");// "inventory");
           m.setAccessible(true);
           //basically saetting this  
-          m.set(player, new ContainerPlayerCrafting((InventoryPlayerCrafting) player.inventory, !player.level.isClientSide, player));
+          m.set(player, new ContainerPlayerCrafting((InventoryPlayerCrafting) player.getInventory(), !player.level.isClientSide, player));
         }
         catch (Exception e) {
           ModInvCrafting.LOGGER.error("Events set container error", e);

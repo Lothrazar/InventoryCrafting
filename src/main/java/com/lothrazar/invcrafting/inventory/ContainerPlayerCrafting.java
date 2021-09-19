@@ -25,7 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class ContainerPlayerCrafting extends InventoryMenu {
 
@@ -157,19 +157,19 @@ public class ContainerPlayerCrafting extends InventoryMenu {
     }
   }
 
-  protected static void slotChangedCraftingGrid(int p_217066_0_, Level p_217066_1_, Player p_217066_2_, CraftingContainer p_217066_3_, ResultContainer p_217066_4_) {
-    if (!p_217066_1_.isClientSide) {
-      ServerPlayer serverplayerentity = (ServerPlayer) p_217066_2_;
+  protected static void slotChangedCraftingGrid(int containerId, Level world, Player player, CraftingContainer container, ResultContainer resultContainer) {
+    if (!world.isClientSide) {
+      ServerPlayer serverplayerentity = (ServerPlayer) player;
       ItemStack itemstack = ItemStack.EMPTY;
-      Optional<CraftingRecipe> optional = p_217066_1_.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, p_217066_3_, p_217066_1_);
+      Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, container, world);
       if (optional.isPresent()) {
         CraftingRecipe icraftingrecipe = optional.get();
-        if (p_217066_4_.setRecipeUsed(p_217066_1_, serverplayerentity, icraftingrecipe)) {
-          itemstack = icraftingrecipe.assemble(p_217066_3_);
+        if (resultContainer.setRecipeUsed(world, serverplayerentity, icraftingrecipe)) {
+          itemstack = icraftingrecipe.assemble(container);
         }
       }
-      p_217066_4_.setItem(0, itemstack);
-      serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(p_217066_0_, 0, itemstack));
+      resultContainer.setItem(0, itemstack);
+      serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(containerId, 0,0, itemstack));
     }
   }
 
@@ -252,9 +252,9 @@ public class ContainerPlayerCrafting extends InventoryMenu {
       if (itemstack1.getCount() == itemstack.getCount()) {
         return ItemStack.EMPTY;
       }
-      ItemStack itemstack2 = slot.onTake(playerIn, itemstack1);
+      slot.onTake(playerIn, itemstack1);
       if (index == 0) {
-        playerIn.drop(itemstack2, false);
+        playerIn.drop(itemstack1, false);
       }
     }
     return itemstack;

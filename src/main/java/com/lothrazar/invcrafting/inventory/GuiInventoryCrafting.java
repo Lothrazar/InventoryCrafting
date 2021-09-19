@@ -1,8 +1,10 @@
 package com.lothrazar.invcrafting.inventory;
 
 import com.lothrazar.invcrafting.ModInvCrafting;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,7 +21,9 @@ public class GuiInventoryCrafting extends InventoryScreen {
   @Override //drawGuiContainerBackgroundLayer
   protected void renderBg(PoseStack ms, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(ms, partialTicks, mouseX, mouseY);
-    this.minecraft.getTextureManager().bind(BACKGROUND);
+//    this.minecraft.getTextureManager().bind(BACKGROUND);
+    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+    RenderSystem.setShaderTexture(0, BACKGROUND);
     this.blit(ms, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
     int i = this.leftPos;
     int j = this.topPos;
