@@ -124,7 +124,6 @@ public class ContainerPlayerCrafting extends InventoryMenu {
       m.setAccessible(true);
       m.set(this, new CraftingContainer(this, craftSize, craftSize));
       this.craftMatrix = (CraftingContainer) m.get(this);
-      //craftResult == resultSlots
       Field mResult = ObfuscationReflectionHelper.findField(InventoryMenu.class, "resultSlots");//"craftResult"
       mResult.setAccessible(true);
       craftResult_ = (ResultContainer) mResult.get(this);
