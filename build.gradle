@@ -22,7 +22,7 @@ version = "${mc_version}-${mod_version}"
 group = 'com.lothrazar.invcrafting' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'invcrafting'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 checkstyle {
     toolVersion '8.23'
@@ -33,7 +33,7 @@ checkstyleMain {
 }
 
 minecraft {
-mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'official', version: '1.18'
 
     //makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
@@ -100,7 +100,7 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    implementation fg.deobf("mezz.jei:${jei_version}")
+//    implementation fg.deobf("mezz.jei:${jei_version}")
   //  compile fg.deobf("top.theillusivec4.curios:curios:FORGE-${mc_version}-${curios_version}")
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
@@ -166,11 +166,15 @@ task signJar(type: SignJar, dependsOn: jar) {
     outputFile = jar.archivePath
 }
 
+build.dependsOn signJar
+
 task copyJar(type: Copy) {
     from jar
     into "${dist_folder}"
 }
 
-cleanJar {
+build.finalizedBy copyJar
+
+task cleanJar {
   delete 'build/libs'
 }

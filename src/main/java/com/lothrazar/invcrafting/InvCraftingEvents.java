@@ -9,22 +9,22 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.ScreenOpenEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class Events {
+public class InvCraftingEvents {
 
   @OnlyIn(Dist.CLIENT)
   @SubscribeEvent
-  public void onGuiOpen(GuiOpenEvent event) {
-    if (event.getGui() == null) {
+  public void onGuiOpen(ScreenOpenEvent event) {
+    if (event.getScreen() == null) {
       return;
     }
-    Screen gui = event.getGui();
+    Screen gui = event.getScreen();
     if (gui.getClass() == InventoryScreen.class && gui instanceof GuiInventoryCrafting == false) {
       gui = new GuiInventoryCrafting(Minecraft.getInstance().player);
-      event.setGui(gui);
+      event.setScreen(gui);
     }
   }
 

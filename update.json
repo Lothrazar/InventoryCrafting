@@ -1,10 +1,9 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/inventory-crafting-grid/",
   "promos": {
-    "1.17.1-latest": "1.0.0",
-    "1.17.1-recommended": "1.0.0"
+    "1.18-latest": "1.1.2"
   },
-  "1.17.1": {
-    "1.0.0": "Ported"
+  "1.18": {
+    "1.1.2": "Ported with JEI PLUGIN DISABLED for now "
   }
 }

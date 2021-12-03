@@ -12,6 +12,6 @@ public class ModInvCrafting {
   public static final String MODID = "invcrafting";
 
   public ModInvCrafting() {
-    MinecraftForge.EVENT_BUS.register(new Events());
+    MinecraftForge.EVENT_BUS.register(new InvCraftingEvents());
   }
 }
