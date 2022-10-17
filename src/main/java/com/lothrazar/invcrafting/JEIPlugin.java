@@ -23,23 +23,23 @@
  ******************************************************************************/
 package com.lothrazar.invcrafting;
 
-//import mezz.jei.api.IModPlugin;
-//import mezz.jei.api.JeiPlugin;
-//import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.resources.ResourceLocation;
 
-//@JeiPlugin             implements IModPlugin
-public class JEIPlugin {
+@JeiPlugin
+public class JEIPlugin implements IModPlugin {
 
   private ResourceLocation id = new ResourceLocation(ModInvCrafting.MODID, "player");
 
-//  @Override
-//  public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
-//    registry.addRecipeTransferHandler(new Transfer());
-//  }
-//
-//  @Override
-//  public ResourceLocation getPluginUid() {
-//    return this.id;
-//  }
+  @Override
+  public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
+    registry.addRecipeTransferHandler(new Transfer());
+  }
+
+  @Override
+  public ResourceLocation getPluginUid() {
+    return this.id;
+  }
 }
