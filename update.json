@@ -1,9 +1,9 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/inventory-crafting-grid/",
   "promos": {
-    "1.18-latest": "1.1.2"
+    "1.18.2-latest": "1.1.3"
   },
-  "1.18": {
-    "1.1.2": "Ported with JEI PLUGIN DISABLED for now "
+  "1.18.2": {
+    "1.1.3": " Re-enable JEI support #17 Merged @MrBysco.  Use forge 40.1.60+ and JEI 9.7.1.255+"
   }
 }
