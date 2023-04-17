@@ -23,10 +23,13 @@
  ******************************************************************************/
 package com.lothrazar.invcrafting;
 
+import com.lothrazar.invcrafting.inventory.ContainerPlayerCrafting;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
@@ -35,7 +38,8 @@ public class JEIPlugin implements IModPlugin {
 
   @Override
   public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
-    registry.addRecipeTransferHandler(new Transfer());
+    IRecipeTransferHandlerHelper transferHelper = registry.getTransferHelper();
+    registry.addRecipeTransferHandler(new Transfer<ContainerPlayerCrafting, CraftingRecipe>(transferHelper));
   }
 
   @Override

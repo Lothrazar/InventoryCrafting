@@ -9,22 +9,22 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ScreenOpenEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class InvCraftingEvents {
 
   @OnlyIn(Dist.CLIENT)
   @SubscribeEvent
-  public void onGuiOpen(ScreenOpenEvent event) {
+  public void onGuiOpen(ScreenEvent.Opening event) { // ScreenOpenEvent
     if (event.getScreen() == null) {
       return;
     }
     Screen gui = event.getScreen();
     if (gui.getClass() == InventoryScreen.class && gui instanceof GuiInventoryCrafting == false) {
       gui = new GuiInventoryCrafting(Minecraft.getInstance().player);
-      event.setScreen(gui);
+      event.setNewScreen(gui);
     }
   }
 
@@ -79,7 +79,7 @@ public class InvCraftingEvents {
   //  zCloak f_36075_
   //  zCloakO f_36104_
   @SubscribeEvent
-  public void onEntityJoinWorld(EntityJoinWorldEvent event) {
+  public void onEntityJoinLevel(EntityJoinLevelEvent event) {
     if (event.getEntity() instanceof Player) {
       Player player = (Player) event.getEntity();
       if (player.getInventory() instanceof InventoryPlayerCrafting == false) {

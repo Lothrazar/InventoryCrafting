@@ -1,9 +1,9 @@
 package com.lothrazar.invcrafting.inventory;
 
-import com.lothrazar.invcrafting.ModInvCrafting;
-import com.mojang.datafixers.util.Pair;
 import java.util.List;
 import java.util.Optional;
+import com.lothrazar.invcrafting.ModInvCrafting;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -180,6 +180,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
     //    }
   }
 
+  @Override
   public void initializeContents(int s, List<ItemStack> stacks, ItemStack stack) {
     try {
       super.initializeContents(s, stacks, stack);
@@ -216,7 +217,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
       if (optional.isPresent()) {
         CraftingRecipe icraftingrecipe = optional.get();
         if (resultContainer.setRecipeUsed(world, serverplayerentity, icraftingrecipe)) {
-          itemstack = icraftingrecipe.assemble(container);
+          itemstack = icraftingrecipe.assemble(container, world.registryAccess());
         }
       }
       resultContainer.setItem(0, itemstack);
