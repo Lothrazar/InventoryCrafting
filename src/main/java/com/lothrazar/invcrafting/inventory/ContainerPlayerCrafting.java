@@ -17,6 +17,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -126,7 +127,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
 
   private void initCraftingGrid(InventoryPlayerCrafting playerInventory) {
     try {
-      this.craftSlots = new CraftingContainer(this, craftSize, craftSize);
+      this.craftSlots = new TransientCraftingContainer(this, craftSize, craftSize);
       //      Field m = ObfuscationReflectionHelper.findField(InventoryMenu.class, "f_39701_"); // craftSlots
       //      m.setAccessible(true);
       //      m.set(this, new CraftingContainer(this, craftSize, craftSize));
@@ -202,7 +203,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
   @Override
   public void slotsChanged(Container inventoryIn) {
     try {
-      slotChangedCraftingGrid(this.containerId, this.player.level, this.player, this.craftSlots, this.resultSlots);
+      slotChangedCraftingGrid(this.containerId, this.player.level(), this.player, this.craftSlots, this.resultSlots);
     }
     catch (Exception e) {
       ModInvCrafting.LOGGER.error("crafting error", e);

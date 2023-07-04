@@ -97,7 +97,7 @@ public class InvCraftingEvents {
         // Field inventoryField = ObfuscationReflectionHelper.findField(Player.class, "f_36093_"); // inventory
         //       inventoryField.set(player, invCrafting);
         player.inventory = invCrafting;
-        player.inventoryMenu = new ContainerPlayerCrafting((InventoryPlayerCrafting) player.getInventory(), !player.level.isClientSide, player);
+        player.inventoryMenu = new ContainerPlayerCrafting((InventoryPlayerCrafting) player.getInventory(), !player.level().isClientSide, player);
         player.containerMenu = player.inventoryMenu;
       }
     }

@@ -17,7 +17,7 @@ issueTrackerURL="https://github.com/Lothrazar/InventoryCrafting/issues" #optiona
 modId="invcrafting" #mandatory
 
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="${file.jarVersion}" #mandatory
+version="${mod_version}" #mandatory
  # A display name for the mod
 displayName="invcrafting" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
@@ -25,7 +25,7 @@ updateJSONURL="https://raw.githubusercontent.com/LothrazarMinecraftMods/Inventor
 # A URL for the "homepage" for this mod, displayed in the mod UI
 displayURL="https://www.curseforge.com/minecraft/mc-mods/inventory-crafting-grid" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="invcrafting.png" #optional
+logoFile="" #optional
 # A text field displayed in the mod UI
 credits="Thanks for this example mod goes to Java" #optional
 # A text field displayed in the mod UI
@@ -50,12 +50,12 @@ Replace your 2x2 inventory with a 3x3 crafting grid
 [[dependencies.invcrafting]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.4,)"
+    versionRange="[1.20.1,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.invcrafting]]
     modId="flib"
     mandatory=true
-    versionRange="[0.0.4,)"
+    versionRange="[0.0.5,)"
     ordering="NONE"
     side="BOTH"
