@@ -12,10 +12,11 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class Transfer<C, R> implements IRecipeTransferInfo<ContainerPlayerCrafting, CraftingRecipe> {
+public class Transfer implements IRecipeTransferInfo<ContainerPlayerCrafting, RecipeHolder<CraftingRecipe>> {
 
-  private final IRecipeTransferHandler<ContainerPlayerCrafting, CraftingRecipe> handler;
+  private final IRecipeTransferHandler<ContainerPlayerCrafting, RecipeHolder<CraftingRecipe>> handler;
 
   public Transfer(IRecipeTransferHandlerHelper handlerHelper) {
     var basicRecipeTransferInfo = handlerHelper.createBasicRecipeTransferInfo(ContainerPlayerCrafting.class, null, RecipeTypes.CRAFTING, 1, 4, 9, 36);
@@ -23,7 +24,7 @@ public class Transfer<C, R> implements IRecipeTransferInfo<ContainerPlayerCrafti
   }
 
   @Override
-  public boolean canHandle(ContainerPlayerCrafting container, CraftingRecipe recipe) {
+  public boolean canHandle(ContainerPlayerCrafting container, RecipeHolder<CraftingRecipe> recipe) {
     return true;
   }
 
@@ -36,25 +37,14 @@ public class Transfer<C, R> implements IRecipeTransferInfo<ContainerPlayerCrafti
   public Optional<MenuType<ContainerPlayerCrafting>> getMenuType() {
     return handler.getMenuType();
   }
-  //  @SuppressWarnings("removal")
-  //  @Override
-  //  public Class getRecipeClass() {
-  //    return CraftingRecipe.class;
-  //  }
-  //
-  //  @SuppressWarnings("removal")
-  //  @Override
-  //  public ResourceLocation getRecipeCategoryUid() {
-  //    return mezz.jei.api.constants.VanillaRecipeCategoryUid.CRAFTING;
-  //  }
 
   @Override
-  public RecipeType<CraftingRecipe> getRecipeType() {
+  public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
     return RecipeTypes.CRAFTING;
   }
 
   @Override
-  public List<Slot> getInventorySlots(ContainerPlayerCrafting container, CraftingRecipe recipe) {
+  public List<Slot> getInventorySlots(ContainerPlayerCrafting container, RecipeHolder<CraftingRecipe> recipe) {
     List<Slot> slots = new ArrayList<>();
     for (int i = 10; i < container.slots.size(); i++) {
       slots.add(container.getSlot(i));
@@ -63,7 +53,7 @@ public class Transfer<C, R> implements IRecipeTransferInfo<ContainerPlayerCrafti
   }
 
   @Override
-  public List<Slot> getRecipeSlots(ContainerPlayerCrafting container, CraftingRecipe recipe) {
+  public List<Slot> getRecipeSlots(ContainerPlayerCrafting container, RecipeHolder<CraftingRecipe> recipe) {
     //zero is the result, hence 1 thru 9 inclusive
     List<Slot> slots = new ArrayList<>();
     for (int i = 1; i <= 9; i++) {

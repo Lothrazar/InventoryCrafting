@@ -3,14 +3,13 @@ package com.lothrazar.invcrafting.inventory;
 import java.util.List;
 import java.util.Optional;
 import com.lothrazar.invcrafting.ModInvCrafting;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -19,12 +18,13 @@ import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ContainerPlayerCrafting extends InventoryMenu {
 
@@ -61,10 +61,11 @@ public class ContainerPlayerCrafting extends InventoryMenu {
     }
     for (int k = 0; k < 4; ++k) {
       final EquipmentSlot equipmentslottype = ARMOR[k];
+      final int armorIdx = equipmentslottype.getIndex();
       slot = 36 + (3 - k);
       x = 8;
       y = 8 + k * 18;
-      this.addSlot(new Slot(playerInventory, slot, x, y) {
+      Slot armorSlot = new Slot(playerInventory, slot, x, y) {
 
         @Override
         public int getMaxStackSize() {
@@ -74,20 +75,16 @@ public class ContainerPlayerCrafting extends InventoryMenu {
         @Override
         public boolean mayPickup(Player playerIn) {
           ItemStack itemstack = this.getItem();
-          return !itemstack.isEmpty() && !playerIn.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack) ? false : super.mayPickup(playerIn);
+          return !itemstack.isEmpty() && !playerIn.isCreative() && EnchantmentHelper.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE) ? false : super.mayPickup(playerIn);
         }
 
         @Override
         public boolean mayPlace(ItemStack stack) {
           return stack.canEquip(equipmentslottype, player);
         }
-
-        @Override
-        @OnlyIn(Dist.CLIENT)
-        public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-          return Pair.of(InventoryMenu.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
-        }
-      });
+      };
+      armorSlot.setBackground(InventoryMenu.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[armorIdx]);
+      this.addSlot(armorSlot);
     }
     for (int l = 0; l < 3; ++l) {
       for (int j1 = 0; j1 < 9; ++j1) {
@@ -106,37 +103,22 @@ public class ContainerPlayerCrafting extends InventoryMenu {
     slot = 40;
     x = 77;
     y = 62;
-    this.addSlot(new Slot(playerInventory, slot, x, y) {
+    Slot shieldSlot = new Slot(playerInventory, slot, x, y) {
 
-      /**
-       * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
-       */
       @Override
       public boolean mayPlace(ItemStack stack) {
         return super.mayPlace(stack);
       }
-
-      @Override
-      @OnlyIn(Dist.CLIENT)
-      public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-        return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
-      }
-    });
+    };
+    shieldSlot.setBackground(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+    this.addSlot(shieldSlot);
     this.slotsChanged(this.craftSlots);
   }
 
   private void initCraftingGrid(InventoryPlayerCrafting playerInventory) {
     try {
       this.craftSlots = new TransientCraftingContainer(this, craftSize, craftSize);
-      //      Field m = ObfuscationReflectionHelper.findField(InventoryMenu.class, "f_39701_"); // craftSlots
-      //      m.setAccessible(true);
-      //      m.set(this, new CraftingContainer(this, craftSize, craftSize));
-      //      this.craftMatrix = (CraftingContainer) m.get(this);
-      //
-      //      Field mResult = ObfuscationReflectionHelper.findField(InventoryMenu.class, "f_39702_"); // resultSlots
-      //      mResult.setAccessible(true);
-      //      craftResult = (ResultContainer) mResult.get(this);
-      //craftSlots is the 3x3 
+      //craftSlots is the 3x3
       this.addSlot(new ResultSlot(playerInventory.player, craftSlots, resultSlots, 0, 154, 24));
     }
     catch (Exception e) {
@@ -144,41 +126,8 @@ public class ContainerPlayerCrafting extends InventoryMenu {
     }
   }
 
-  //  net/minecraft/world/inventory/AbstractContainerMenu net/minecraft/world/inventory/AbstractContainerMenu
-  //  CARRIED_SLOT_SIZE f_150392_
-  //  QUICKCRAFT_HEADER_CONTINUE f_150390_
-  //  QUICKCRAFT_HEADER_END f_150391_
-  //  QUICKCRAFT_HEADER_START f_150389_
-  //  QUICKCRAFT_TYPE_CHARITABLE f_150386_
-  //  QUICKCRAFT_TYPE_CLONE f_150388_
-  //  QUICKCRAFT_TYPE_GREEDY f_150387_
-  //  SLOT_CLICKED_OUTSIDE f_150385_
-  //  carried f_150393_
-  //  containerId f_38840_
-  //  containerListeners f_38848_
-  //  dataSlots f_38842_
-  //  lastSlots f_38841_
-  //  menuType f_38843_
-  //  quickcraftSlots f_38847_
-  //  quickcraftStatus f_38846_
-  //  quickcraftType f_38845_
-  //  remoteCarried f_150396_
-  //  remoteDataSlots f_150395_
-  //  remoteSlots f_150394_
-  //  slots f_38839_
-  //  stateId f_182405_
-  //  suppressRemoteUpdates f_150398_
-  //  synchronizer f_150397_
   private void initInventorySlots() {
     this.slots = NonNullList.create();
-    //    try {
-    //      Field m = ObfuscationReflectionHelper.findField(AbstractContainerMenu.class, "f_38839_"); // slots
-    //      m.setAccessible(true);
-    //      m.set(this, NonNullList.create());
-    //    }
-    //    catch (Exception e) {
-    //      ModInvCrafting.LOGGER.error(" initInventorySlots error", e);
-    //    }
   }
 
   @Override
@@ -203,26 +152,32 @@ public class ContainerPlayerCrafting extends InventoryMenu {
   @Override
   public void slotsChanged(Container inventoryIn) {
     try {
-      slotChangedCraftingGrid(this.containerId, this.player.level(), this.player, this.craftSlots, this.resultSlots);
+      slotChangedCraftingGrid(this, this.containerId, this.player.level(), this.player, this.craftSlots, this.resultSlots);
     }
     catch (Exception e) {
       ModInvCrafting.LOGGER.error("crafting error", e);
     }
   }
 
-  protected static void slotChangedCraftingGrid(int containerId, Level world, Player player, CraftingContainer container, ResultContainer resultContainer) {
+  protected static void slotChangedCraftingGrid(ContainerPlayerCrafting menu, int containerId, Level world, Player player, CraftingContainer container, ResultContainer resultContainer) {
     if (!world.isClientSide) {
       ServerPlayer serverplayerentity = (ServerPlayer) player;
       ItemStack itemstack = ItemStack.EMPTY;
-      Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, container, world);
+      CraftingInput input = container.asCraftInput();
+      Optional<RecipeHolder<CraftingRecipe>> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, world);
       if (optional.isPresent()) {
-        CraftingRecipe icraftingrecipe = optional.get();
-        if (resultContainer.setRecipeUsed(world, serverplayerentity, icraftingrecipe)) {
-          itemstack = icraftingrecipe.assemble(container, world.registryAccess());
+        RecipeHolder<CraftingRecipe> holder = optional.get();
+        CraftingRecipe icraftingrecipe = holder.value();
+        if (resultContainer.setRecipeUsed(world, serverplayerentity, holder)) {
+          ItemStack assembled = icraftingrecipe.assemble(input, world.registryAccess());
+          if (assembled.isItemEnabled(world.enabledFeatures())) {
+            itemstack = assembled;
+          }
         }
       }
       resultContainer.setItem(0, itemstack);
-      serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(containerId, 0, 0, itemstack));
+      menu.setRemoteSlot(0, itemstack);
+      serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(containerId, menu.incrementStateId(), 0, itemstack));
     }
   }
 
@@ -236,7 +191,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
     if (slot.hasItem()) {
       ItemStack itemstack1 = slot.getItem();
       itemstack = itemstack1.copy();
-      EquipmentSlot equipmentslottype = Mob.getEquipmentSlotForItem(itemstack);
+      EquipmentSlot equipmentslottype = playerIn.getEquipmentSlotForItem(itemstack);
       if (index == 0 || index == SHIELD) {
         //craft output
         if (!this.moveItemStackTo(itemstack1, TOPLEFT, HOTBAREND + 1, false)) {
@@ -245,7 +200,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
         slot.onQuickCraft(itemstack1, itemstack);
       }
       else if (index >= ARMORSTART && index <= ARMOREND) {
-        // from armor 
+        // from armor
         if (!this.moveItemStackTo(itemstack1, TOPLEFT, HOTBAREND + 1, false)) {
           return ItemStack.EMPTY;
         }
@@ -256,8 +211,8 @@ public class ContainerPlayerCrafting extends InventoryMenu {
           return ItemStack.EMPTY;
         }
       }
-      else if (equipmentslottype.getType() == EquipmentSlot.Type.ARMOR && !this.getSlot(8 - equipmentslottype.getIndex()).hasItem()) {
-        //going to armor slots 
+      else if (equipmentslottype.getType() == EquipmentSlot.Type.HUMANOID_ARMOR && !this.getSlot(8 - equipmentslottype.getIndex()).hasItem()) {
+        //going to armor slots
         int i = ARMORSTART - equipmentslottype.getIndex() + 3;
         if (!this.moveItemStackTo(itemstack1, i, i + 1, false)) {
           return ItemStack.EMPTY;
