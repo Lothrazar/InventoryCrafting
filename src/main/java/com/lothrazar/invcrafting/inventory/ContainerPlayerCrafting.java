@@ -5,7 +5,7 @@ import java.util.Optional;
 import com.lothrazar.invcrafting.ModInvCrafting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -38,10 +38,11 @@ public class ContainerPlayerCrafting extends InventoryMenu {
   private static final int ARMORSTART = 10;
   private static final int ARMOREND = 13;
   private static final int SHIELD = 50;
-  private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] { EMPTY_ARMOR_SLOT_BOOTS, EMPTY_ARMOR_SLOT_LEGGINGS, EMPTY_ARMOR_SLOT_CHESTPLATE, EMPTY_ARMOR_SLOT_HELMET };
+  private static final Identifier[] ARMOR_SLOT_TEXTURES = new Identifier[] { EMPTY_ARMOR_SLOT_BOOTS, EMPTY_ARMOR_SLOT_LEGGINGS, EMPTY_ARMOR_SLOT_CHESTPLATE, EMPTY_ARMOR_SLOT_HELMET };
   private static final EquipmentSlot[] ARMOR = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
   private final int craftSize = 3; //did not exist before, was magic'd as 2 everywhere
   private final Player player;
+  private CraftingContainer craftGrid;
 
   public ContainerPlayerCrafting(InventoryPlayerCrafting playerInventory, boolean localWorld, Player player) {
     super(playerInventory, localWorld, player);
@@ -56,7 +57,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
         x = 82 + j * 18;
         y = 8 + i * 18;
         slot = j + i * craftSize;
-        this.addSlot(new Slot(this.craftSlots, slot, x, y));
+        this.addSlot(new Slot(this.craftGrid, slot, x, y));
       }
     }
     for (int k = 0; k < 4; ++k) {
@@ -83,7 +84,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
           return stack.canEquip(equipmentslottype, player);
         }
       };
-      armorSlot.setBackground(InventoryMenu.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[armorIdx]);
+      armorSlot.setBackground(ARMOR_SLOT_TEXTURES[armorIdx]);
       this.addSlot(armorSlot);
     }
     for (int l = 0; l < 3; ++l) {
@@ -110,16 +111,16 @@ public class ContainerPlayerCrafting extends InventoryMenu {
         return super.mayPlace(stack);
       }
     };
-    shieldSlot.setBackground(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+    shieldSlot.setBackground(InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
     this.addSlot(shieldSlot);
-    this.slotsChanged(this.craftSlots);
+    this.slotsChanged(this.craftGrid);
   }
 
   private void initCraftingGrid(InventoryPlayerCrafting playerInventory) {
     try {
-      this.craftSlots = new TransientCraftingContainer(this, craftSize, craftSize);
-      //craftSlots is the 3x3
-      this.addSlot(new ResultSlot(playerInventory.player, craftSlots, resultSlots, 0, 154, 24));
+      this.craftGrid = new TransientCraftingContainer(this, craftSize, craftSize);
+      //craftGrid is the 3x3
+      this.addSlot(new ResultSlot(playerInventory.player, craftGrid, resultSlots, 0, 154, 24));
     }
     catch (Exception e) {
       ModInvCrafting.LOGGER.error(" initCraftingGrid error", e);
@@ -152,7 +153,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
   @Override
   public void slotsChanged(Container inventoryIn) {
     try {
-      slotChangedCraftingGrid(this, this.containerId, this.player.level(), this.player, this.craftSlots, this.resultSlots);
+      slotChangedCraftingGrid(this, this.containerId, this.player.level(), this.player, this.craftGrid, this.resultSlots);
     }
     catch (Exception e) {
       ModInvCrafting.LOGGER.error("crafting error", e);
@@ -160,7 +161,7 @@ public class ContainerPlayerCrafting extends InventoryMenu {
   }
 
   protected static void slotChangedCraftingGrid(ContainerPlayerCrafting menu, int containerId, Level world, Player player, CraftingContainer container, ResultContainer resultContainer) {
-    if (!world.isClientSide) {
+    if (!world.isClientSide()) {
       ServerPlayer serverplayerentity = (ServerPlayer) player;
       ItemStack itemstack = ItemStack.EMPTY;
       CraftingInput input = container.asCraftInput();
@@ -168,8 +169,8 @@ public class ContainerPlayerCrafting extends InventoryMenu {
       if (optional.isPresent()) {
         RecipeHolder<CraftingRecipe> holder = optional.get();
         CraftingRecipe icraftingrecipe = holder.value();
-        if (resultContainer.setRecipeUsed(world, serverplayerentity, holder)) {
-          ItemStack assembled = icraftingrecipe.assemble(input, world.registryAccess());
+        if (resultContainer.setRecipeUsed(serverplayerentity, holder)) {
+          ItemStack assembled = icraftingrecipe.assemble(input);
           if (assembled.isItemEnabled(world.enabledFeatures())) {
             itemstack = assembled;
           }

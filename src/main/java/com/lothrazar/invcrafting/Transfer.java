@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import com.lothrazar.invcrafting.inventory.ContainerPlayerCrafting;
 import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
@@ -39,7 +39,7 @@ public class Transfer implements IRecipeTransferInfo<ContainerPlayerCrafting, Re
   }
 
   @Override
-  public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
+  public IRecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
     return RecipeTypes.CRAFTING;
   }
 

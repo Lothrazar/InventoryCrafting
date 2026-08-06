@@ -42,16 +42,10 @@ public class InvCraftingEvents {
       Player player = (Player) event.getEntity();
       if (player.getInventory() instanceof InventoryPlayerCrafting == false) {
         InventoryPlayerCrafting invCrafting = new InventoryPlayerCrafting(player);
-        for (int i = 0; i < invCrafting.armor.size(); i++) {
-          invCrafting.armor.set(i, player.getInventory().armor.get(i));
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+          invCrafting.setItem(i, player.getInventory().getItem(i));
         }
-        for (int i = 0; i < invCrafting.items.size(); i++) {
-          invCrafting.items.set(i, player.getInventory().items.get(i));
-        }
-        for (int i = 0; i < invCrafting.offhand.size(); i++) {
-          invCrafting.offhand.set(i, player.getInventory().offhand.get(i));
-        }
-        invCrafting.selected = player.getInventory().selected;
+        invCrafting.setSelectedSlot(player.getInventory().getSelectedSlot());
         player.inventory = invCrafting;
         installMenuForGameMode(player, player.isCreative() ? GameType.CREATIVE : GameType.SURVIVAL);
         player.containerMenu = player.inventoryMenu;
@@ -89,7 +83,7 @@ public class InvCraftingEvents {
     }
     boolean creative = (newMode == GameType.CREATIVE);
     boolean hasCustom = player.inventoryMenu instanceof ContainerPlayerCrafting;
-    boolean localWorld = !player.level().isClientSide;
+    boolean localWorld = !player.level().isClientSide();
     if (creative && hasCustom) {
       player.inventoryMenu = new InventoryMenu(player.getInventory(), localWorld, player);
       if (player.containerMenu == null || player.containerMenu instanceof ContainerPlayerCrafting) {

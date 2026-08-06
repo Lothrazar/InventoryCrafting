@@ -4,12 +4,12 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
 
-  private ResourceLocation id = ResourceLocation.fromNamespaceAndPath(ModInvCrafting.MODID, "player");
+  private Identifier id = Identifier.fromNamespaceAndPath(ModInvCrafting.MODID, "player");
 
   @Override
   public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
@@ -18,7 +18,7 @@ public class JEIPlugin implements IModPlugin {
   }
 
   @Override
-  public ResourceLocation getPluginUid() {
+  public Identifier getPluginUid() {
     return this.id;
   }
 }
