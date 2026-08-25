@@ -9,8 +9,6 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.GameType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerChangeGameTypeEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
@@ -19,7 +17,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 public class InvCraftingEvents {
 
-  @OnlyIn(Dist.CLIENT)
   @SubscribeEvent
   public void onGuiOpen(ScreenEvent.Opening event) {
     if (event.getScreen() == null) {
@@ -62,7 +59,6 @@ public class InvCraftingEvents {
   }
 
   // client-side game mode change
-  @OnlyIn(Dist.CLIENT)
   @SubscribeEvent
   public void onClientChangeGameType(ClientPlayerChangeGameTypeEvent event) {
     Player player = Minecraft.getInstance().player;

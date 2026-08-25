@@ -5,5 +5,8 @@
   },
   "1.21.1": {
     "2.0.0": "Ported to 1.21.1 neoforge.  Fixed the visual-only itemslot issues when a player switches to creative"
+  },
+  "26.1.2": {
+    "2.0.0": "Ported"
   }
 }
